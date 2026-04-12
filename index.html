@@ -1,0 +1,2730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Order Tracking List</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface2: #e8eef4;
+    --border: #c8d6e5;
+    --border2: #a0b4c8;
+    --accent: #2563eb;
+    --accent2: #3b82f6;
+    --green: #059669;
+    --amber: #d97706;
+    --red: #dc2626;
+    --purple: #7c3aed;
+    --teal: #0d9488;
+    --orange: #ea580c;
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --row-h: 42px;
+    --header-h: 36px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── LOGIN OVERLAY ── */
+  #loginOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(30,41,59,0.7);
+    z-index: 8000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    backdrop-filter: blur(2px);
+  }
+
+  #loginOverlay.hidden { display: none; }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 32px 28px 24px;
+    width: 100%;
+    max-width: 360px;
+    position: relative;
+  }
+
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .login-logo-dot {
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  .login-logo-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .login-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .login-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 22px;
+  }
+
+  .login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+
+  .login-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .login-input {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .login-input:focus { border-color: var(--accent); }
+
+  .login-error {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--red);
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  .login-error.visible { display: block; }
+
+  .login-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent);
+    border: none;
+    border-radius: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 4px;
+  }
+
+  .login-btn:hover { background: var(--accent2); }
+  .login-btn:active { transform: scale(0.98); }
+
+  .login-divider {
+    margin: 18px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .login-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .login-divider-text { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+
+  .hint-users { display: flex; flex-direction: column; gap: 5px; }
+
+  .hint-user {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .hint-user:hover { border-color: var(--border2); background: var(--surface2); }
+
+  .hint-left { display: flex; align-items: center; gap: 8px; }
+
+  .hint-avatar {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 8px; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .hint-user-name { font-family: var(--mono); font-size: 10px; color: var(--text2); }
+
+  .hint-role-badge {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 100px;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+
+  .hint-role-badge.admin     { color:var(--accent);  border-color:rgba(37,99,235,0.4);  background:rgba(37,99,235,0.08); }
+  .hint-role-badge.planner   { color:var(--teal);    border-color:rgba(20,184,166,0.4);  background:rgba(20,184,166,0.08); }
+  .hint-role-badge.inventory { color:var(--green);   border-color:rgba(16,185,129,0.4);  background:rgba(16,185,129,0.08); }
+  .hint-role-badge.logistics { color:var(--orange);  border-color:rgba(249,115,22,0.4);  background:rgba(249,115,22,0.08); }
+  .hint-role-badge.purchaser { color:var(--purple);  border-color:rgba(139,92,246,0.4);  background:rgba(139,92,246,0.08); }
+  .hint-role-badge.sales     { color:var(--amber);   border-color:rgba(245,158,11,0.4);  background:rgba(245,158,11,0.08); }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: 52px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink {
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:0.5;transform:scale(0.8);}
+  }
+
+  .topbar-divider { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+
+  .role-switcher {
+    display: flex;
+    gap: 3px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .role-btn {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text3);
+    transition: all 0.15s;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .role-btn.active { background: var(--accent); color: #fff; }
+  .role-btn:not(.active):hover { color: var(--text2); background: var(--surface2); }
+  .role-btn[data-role="inventory"].active { background: var(--green); }
+  .role-btn[data-role="logistics"].active { background: var(--orange); }
+  .role-btn[data-role="purchaser"].active { background: var(--purple); }
+  .role-btn[data-role="planner"].active   { background: var(--teal); }
+  .role-btn[data-role="sales"].active     { background: var(--amber); }
+
+  /* User chip */
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 3px 11px 3px 4px;
+    flex-shrink: 0;
+  }
+
+  .user-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 8px; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .user-name-display {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+  .stat-pill {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .stat-pill span { color: var(--accent2); font-weight: 600; }
+
+  .role-indicator {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .ri-admin    { color:var(--accent);  border-color:rgba(37,99,235,0.4);  background:rgba(37,99,235,0.1); }
+  .ri-planner  { color:var(--teal);    border-color:rgba(20,184,166,0.4);  background:rgba(20,184,166,0.1); }
+  .ri-inventory{ color:var(--green);   border-color:rgba(16,185,129,0.4);  background:rgba(16,185,129,0.1); }
+  .ri-logistics{ color:var(--orange);  border-color:rgba(249,115,22,0.4);  background:rgba(249,115,22,0.1); }
+  .ri-purchaser{ color:var(--purple);  border-color:rgba(139,92,246,0.4);  background:rgba(139,92,246,0.1); }
+  .ri-sales    { color:var(--amber);   border-color:rgba(245,158,11,0.4);  background:rgba(245,158,11,0.1); }
+
+  .logout-btn {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  @media (max-width: 700px) {
+    .stat-pill.hide-xs { display: none; }
+    .logo-text { display: none; }
+    .topbar-divider { display: none; }
+    .role-indicator { display: none; }
+    .user-name-display { display: none; }
+  }
+
+  @media (max-width: 560px) {
+    .role-switcher { display: none; }
+  }
+
+  @media (max-width: 500px) { .role-btn { font-size: 8px; padding: 3px 5px; } }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-row1 { display: flex; align-items: center; gap: 8px; width: 100%; flex-wrap: wrap; }
+
+  .search-wrap {
+    display: flex; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0 10px; gap: 6px;
+    flex: 1; min-width: 120px; transition: border-color 0.15s;
+  }
+
+  .search-wrap:focus-within { border-color: var(--accent); }
+  .search-wrap svg { color: var(--text3); flex-shrink: 0; }
+  .search-wrap input { background: none; border: none; outline: none; font-family: var(--mono); font-size: 11px; color: var(--text); width: 100%; padding: 7px 0; }
+  .search-wrap input::placeholder { color: var(--text3); }
+
+  .filter-select { font-family: var(--mono); font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); padding: 6px 8px; cursor: pointer; outline: none; transition: border-color 0.15s; flex-shrink: 0; }
+  .filter-select:focus { border-color: var(--accent); }
+
+  .toolbar-btn { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 11px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; }
+  .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .toolbar-btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+
+  .view-toggle { display: flex; gap: 3px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px; flex-shrink: 0; }
+  .view-btn { background: none; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; color: var(--text3); transition: all 0.15s; display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+  .view-btn.active { background: var(--surface2); color: var(--accent); }
+  .view-btn:not(.active):hover { color: var(--text2); background: rgba(255,255,255,0.04); }
+  .view-btn-label { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.05em; }
+  @media (max-width: 400px) { .view-btn-label { display: none; } }
+
+  /* ── CONTENT ── */
+  .content-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .table-container { flex: 1; overflow: auto; position: relative; }
+  .table-container.hidden { display: none; }
+
+  table { border-collapse: collapse; min-width: 100%; table-layout: fixed; }
+  thead { position: sticky; top: 0; z-index: 20; }
+
+  th { height: var(--header-h); background: var(--surface); border-right: 1px solid var(--border); border-bottom: 2px solid var(--border2); font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); text-align: left; padding: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; cursor: pointer; transition: color 0.12s, background 0.12s; }
+  th:first-child { width: 44px; text-align: center; cursor: default; }
+  th:hover:not(:first-child) { color: var(--text2); background: var(--surface2); }
+  th.sorted { color: var(--accent); }
+  th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  th.sorted .sort-icon { opacity: 1; }
+  th.g-inventory { color: var(--green)  !important; border-bottom-color: rgba(16,185,129,0.5) !important; }
+  th.g-project   { color: var(--teal)   !important; border-bottom-color: rgba(20,184,166,0.5) !important; }
+  th.g-logistics { color: var(--orange) !important; border-bottom-color: rgba(249,115,22,0.5) !important; }
+  th.g-purchaser { color: var(--purple) !important; border-bottom-color: rgba(139,92,246,0.5) !important; }
+
+  tbody tr { height: var(--row-h); border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:hover { background: #e2eaf3; }
+  tbody tr.selected { background: rgba(37,99,235,0.08); }
+
+  td { padding: 0 10px; border-right: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
+  td:first-child { text-align: center; color: var(--text3); font-size: 10px; width: 44px; }
+  td.editable { cursor: text; }
+  td.editable:hover::after { content:''; position:absolute; inset:2px; border:1px dashed var(--border2); border-radius:3px; pointer-events:none; }
+  td.locked { background: rgba(0,0,0,0.12); cursor: not-allowed; }
+  td.o-inventory { border-left: 2px solid rgba(16,185,129,0.2); }
+  td.o-logistics { border-left: 2px solid rgba(249,115,22,0.2); }
+  td.o-purchaser { border-left: 2px solid rgba(139,92,246,0.2); }
+  td.o-project   { border-left: 2px solid rgba(20,184,166,0.2); }
+
+  td input.cell-input { width:100%; height:100%; background:var(--surface2); border:1.5px solid var(--accent); border-radius:3px; outline:none; font-family:var(--mono); font-size:11px; color:var(--text); padding:0 6px; position:absolute; top:0; left:0; z-index:10; }
+
+  .badge { display:inline-flex; align-items:center; gap:4px; font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:2px 7px; border-radius:100px; border:1px solid; }
+  .badge-dot { width:5px; height:5px; border-radius:50%; }
+  .badge.open      { color:var(--accent);  border-color:rgba(37,99,235,0.3);  background:rgba(37,99,235,0.08); }
+  .badge.in-prog   { color:var(--amber);   border-color:rgba(245,158,11,0.3);  background:rgba(245,158,11,0.08); }
+  .badge.complete  { color:var(--green);   border-color:rgba(16,185,129,0.3);  background:rgba(16,185,129,0.08); }
+  .badge.delayed   { color:var(--red);     border-color:rgba(239,68,68,0.3);   background:rgba(239,68,68,0.08); }
+  .badge.pending   { color:var(--purple);  border-color:rgba(139,92,246,0.3);  background:rgba(139,92,246,0.08); }
+  .badge.on-track  { color:var(--teal);    border-color:rgba(20,184,166,0.3);  background:rgba(20,184,166,0.08); }
+  .badge.at-risk   { color:var(--orange);  border-color:rgba(249,115,22,0.3);  background:rgba(249,115,22,0.08); }
+  .badge.closed     { color:var(--text3);   border-color:rgba(100,116,139,0.3); background:rgba(100,116,139,0.08); }
+  .badge.delivered   { color:#fff;          border-color:#16a34a;                background:#16a34a; }
+  .badge.cancelled   { color:#fff;          border-color:#dc2626;                background:#dc2626; }
+  .badge.to-stock    { color:#fff;          border-color:#7c3aed;                background:#7c3aed; }
+  .badge.open     .badge-dot { background:var(--accent); }
+  .badge.in-prog  .badge-dot { background:var(--amber); }
+  .badge.complete .badge-dot { background:var(--green); }
+  .badge.delayed  .badge-dot { background:var(--red); }
+  .badge.pending  .badge-dot { background:var(--purple); }
+  .badge.on-track .badge-dot { background:var(--teal); }
+  .badge.at-risk  .badge-dot { background:var(--orange); }
+  .badge.closed    .badge-dot { background:var(--text3); }
+  .badge.delivered  .badge-dot { background:#fff; }
+  .badge.cancelled  .badge-dot { background:#fff; }
+  .badge.to-stock   .badge-dot { background:#fff; }
+
+  .date-overdue { color:var(--red)   !important; }
+  .date-soon    { color:var(--amber) !important; }
+  .date-ok      { color:var(--green) !important; }
+
+  .attach-cell { display:flex; align-items:center; gap:4px; }
+  .attach-btn { display:inline-flex; align-items:center; gap:4px; font-family:var(--mono); font-size:9px; color:var(--text3); background:none; border:1px dashed var(--border2); border-radius:4px; padding:2px 6px; cursor:pointer; transition:all 0.15s; }
+  .attach-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .attach-count { font-family:var(--mono); font-size:9px; color:var(--accent2); background:rgba(37,99,235,0.12); border-radius:100px; padding:1px 6px; cursor:pointer; }
+  .attach-count:hover { background:rgba(37,99,235,0.22); }
+
+  .cb { width:14px; height:14px; border:1.5px solid var(--border2); border-radius:3px; background:none; cursor:pointer; appearance:none; position:relative; transition:all 0.12s; flex-shrink:0; }
+  .cb:checked { background:var(--accent); border-color:var(--accent); }
+  .cb:checked::after { content:'✓'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:9px; color:#fff; line-height:1; }
+
+  .cards-container { flex:1; overflow-y:auto; padding:12px; display:none; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; align-content:start; }
+  .cards-container.visible { display:grid; }
+  .order-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:border-color 0.15s, background 0.15s; }
+  .order-card:hover { border-color:var(--border2); background:var(--surface2); }
+  .order-card.selected { border-color:rgba(37,99,235,0.5); background:rgba(37,99,235,0.05); }
+  .card-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .card-po { font-family:var(--mono); font-size:12px; font-weight:600; color:var(--text); }
+  .card-site { font-family:var(--mono); font-size:10px; color:var(--accent2); background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.2); border-radius:4px; padding:2px 7px; flex-shrink:0; }
+  .card-ident { font-size:12px; color:var(--text2); font-weight:500; }
+  .card-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; }
+  .card-field { display:flex; flex-direction:column; gap:2px; }
+  .card-label { font-family:var(--mono); font-size:8px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); }
+  .card-value { font-family:var(--mono); font-size:11px; color:var(--text2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .card-value.can-edit { border-bottom:1px dashed var(--border2); padding-bottom:1px; cursor:text; }
+  .card-value.can-edit:hover { border-bottom-color:var(--accent); color:var(--text); }
+  .card-sep { font-family:var(--mono); font-size:8px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:4px 0 2px; border-top:1px solid var(--border); margin-top:2px; }
+  .card-sep.logistics { color:var(--orange); }
+  .card-sep.purchaser { color:var(--purple); }
+  .card-sep.project   { color:var(--teal); }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--border); padding-top:10px; gap:8px; flex-wrap:wrap; }
+  .card-dates { display:flex; gap:10px; flex-wrap:wrap; }
+  .card-date-item { display:flex; flex-direction:column; gap:1px; }
+  .card-actions { display:flex; gap:6px; margin-left:auto; }
+  .card-action-btn { font-family:var(--mono); font-size:9px; padding:4px 8px; border-radius:5px; border:1px solid var(--border2); background:var(--bg); color:var(--text3); cursor:pointer; transition:all 0.15s; display:flex; align-items:center; gap:4px; }
+  .card-action-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .card-status-wrap { position:relative; display:inline-flex; align-items:center; cursor:pointer; }
+  .card-status-wrap select { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; font-size:16px; }
+
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(30,41,59,0.6); z-index:1000; align-items:center; justify-content:center; padding:16px; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border2); border-radius:12px; width:560px; max-width:100%; max-height:90dvh; overflow-y:auto; padding:20px; position:relative; }
+  .modal-title { font-family:var(--mono); font-size:13px; font-weight:600; color:var(--accent); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px; display:flex; align-items:center; gap:8px; padding-right:28px; }
+  .modal-section { font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin:14px 0 8px; padding-bottom:6px; border-bottom:1px solid var(--border); color:var(--text3); }
+  .modal-section.inventory { color:var(--green);  border-bottom-color:rgba(16,185,129,0.3); }
+  .modal-section.project   { color:var(--teal);   border-bottom-color:rgba(20,184,166,0.3); }
+  .modal-section.logistics { color:var(--orange); border-bottom-color:rgba(249,115,22,0.3); }
+  .modal-section.purchaser { color:var(--purple); border-bottom-color:rgba(139,92,246,0.3); }
+  .modal-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text3); font-size:18px; cursor:pointer; padding:4px 8px; border-radius:4px; transition:color 0.15s; line-height:1; }
+  .modal-close:hover { color:var(--text); }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:480px) { .form-grid { grid-template-columns:1fr; } .form-group.full { grid-column:1; } }
+  .form-group { display:flex; flex-direction:column; gap:5px; }
+  .form-group.full { grid-column:1/-1; }
+  .form-label { font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); }
+  .form-input, .form-select { font-family:var(--mono); font-size:11px; background:var(--bg); border:1px solid var(--border2); border-radius:6px; color:var(--text); padding:8px 10px; outline:none; transition:border-color 0.15s; width:100%; }
+  .form-input:focus, .form-select:focus { border-color:var(--accent); }
+  .form-input:disabled, .form-select:disabled { opacity:0.3; cursor:not-allowed; border-style:dashed; }
+  .form-select option { background:var(--surface); }
+  .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; }
+
+  .files-list { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+  .file-item { display:flex; align-items:center; gap:10px; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:8px 12px; font-family:var(--mono); font-size:11px; color:var(--text2); }
+  .file-icon { width:28px; height:28px; background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.2); border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+  .file-name { flex:1; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .file-size { color:var(--text3); font-size:10px; white-space:nowrap; }
+  .file-remove { background:none; border:none; color:var(--text3); cursor:pointer; padding:4px; border-radius:3px; transition:color 0.12s; flex-shrink:0; font-size:14px; line-height:1; }
+  .file-remove:hover { color:var(--red); }
+  .drop-zone { border:2px dashed var(--border2); border-radius:8px; padding:20px; text-align:center; cursor:pointer; transition:all 0.15s; color:var(--text3); font-family:var(--mono); font-size:11px; }
+  .drop-zone:hover, .drop-zone.drag-over { border-color:var(--accent); background:rgba(37,99,235,0.05); color:var(--accent); }
+  .drop-zone input { display:none; }
+
+  .statusbar { height:26px; background:var(--surface); border-top:1px solid var(--border); display:flex; align-items:center; padding:0 12px; gap:12px; flex-shrink:0; overflow:hidden; }
+  .statusbar-item { font-family:var(--mono); font-size:9px; color:var(--text3); display:flex; align-items:center; gap:4px; letter-spacing:0.04em; white-space:nowrap; }
+  .statusbar-item .val { color:var(--text2); }
+  @media (max-width:500px) { .statusbar-item.hide-sm { display:none; } }
+  .live-badge { display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:9px; color:var(--green); margin-left:auto; white-space:nowrap; }
+  .live-dot { width:6px; height:6px; background:var(--green); border-radius:50%; animation:blink 1.5s ease-in-out infinite; flex-shrink:0; }
+
+  .toast-wrap { position:fixed; bottom:40px; right:16px; left:16px; display:flex; flex-direction:column; align-items:flex-end; gap:8px; z-index:9999; pointer-events:none; }
+  .toast { font-family:var(--mono); font-size:11px; background:var(--surface2); border:1px solid var(--border2); border-left:3px solid var(--green); border-radius:6px; padding:10px 14px; color:var(--text); animation:slideIn 0.2s ease; opacity:1; transition:opacity 0.3s; max-width:320px; width:100%; }
+  .toast.error { border-left-color:var(--red); }
+  .toast.info  { border-left-color:var(--accent); }
+  .toast.warn  { border-left-color:var(--amber); }
+  @keyframes slideIn { from{transform:translateX(20px);opacity:0;} to{transform:translateX(0);opacity:1;} }
+
+  .frozen { position:sticky; left:44px; z-index:5; background:var(--surface); box-shadow:2px 0 4px rgba(0,0,0,0.06); }
+  tbody tr:hover .frozen { background:#e2eaf3; }
+  tbody tr.selected .frozen { background:rgba(37,99,235,0.1); }
+  th.frozen-h { position:sticky; left:44px; z-index:25; background:var(--surface); }
+
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:#e8eef4; }
+  ::-webkit-scrollbar-thumb { background:#b0c4d8; border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:#8aa3bb; }
+
+  .col-cb{width:44px;} .col-site{width:90px;} .col-cpo{width:130px;} .col-apo{width:130px;}
+  .col-prs{width:110px;} .col-qty{width:60px;} .col-assy{width:120px;} .col-ident{width:130px;}
+  .col-pn{width:150px;} .col-dn{width:130px;} .col-rev{width:55px;} .col-istat{width:140px;}
+  .col-pstat{width:120px;} .col-crdd{width:110px;} .col-ardd{width:110px;} .col-etf{width:100px;}
+  .col-eta{width:100px;} .col-sinv{width:140px;} .col-ainv{width:130px;} .col-awb{width:130px;}
+  .col-peta{width:110px;} .col-etd{width:130px;} .col-files{width:110px;}
+
+  /* ETD highlight */
+  th.g-etd { color:#b45309 !important; border-bottom-color:rgba(180,83,9,0.6) !important; background:#fffbeb !important; font-weight:700 !important; }
+  td.o-etd { border-left:3px solid rgba(245,158,11,0.6) !important; background:#fffbeb !important; }
+  td.o-etd .date-ok      { color:#92400e !important; font-weight:600; }
+  td.o-etd .date-soon    { color:#d97706 !important; font-weight:700; }
+  td.o-etd .date-overdue { color:#dc2626 !important; font-weight:700; }
+  td.o-etd span          { font-weight:600; }
+
+  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:60px 20px; color:var(--text3); font-family:var(--mono); font-size:12px; text-align:center; }
+  .empty-state svg { opacity:0.3; }
+
+  .fab { display:none; position:fixed; bottom:42px; right:16px; width:48px; height:48px; border-radius:50%; background:var(--accent); border:none; color:#fff; font-size:22px; cursor:pointer; z-index:500; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(37,99,235,0.4); transition:background 0.15s,transform 0.15s; }
+  .fab:hover { background:var(--accent2); transform:scale(1.05); }
+  .fab:active { transform:scale(0.96); }
+
+  @media (max-width:600px) {
+    .fab { display:flex; }
+    #addRowBtn { display:none !important; }
+    .export-btn-text { display:none; }
+    .form-input,.form-select,.filter-select,.search-wrap input { font-size:16px !important; }
+  }
+
+  /* PAGE TABS */
+  .page-tabs { display:flex; align-items:center; gap:2px; background:var(--bg); border-bottom:1px solid var(--border); padding:0 16px; flex-shrink:0; }
+  .page-tab { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:10px 16px; border:none; background:none; color:var(--text3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.15s,border-color 0.15s; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+  .page-tab:hover { color:var(--text2); }
+  .page-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .page-tab.admin-tab:hover { color:var(--purple); }
+  .page-tab.admin-tab.active { color:var(--purple); border-bottom-color:var(--purple); }
+  .page-tab.shipped-tab:hover   { color:#16a34a; }
+  .page-tab.shipped-tab.active  { color:#16a34a; border-bottom-color:#16a34a; }
+  .page-tab.archive-tab:hover   { color:#7c3aed; }
+  .page-tab.archive-tab.active  { color:#7c3aed; border-bottom-color:#7c3aed; }
+  .page-tab.locked-tab { opacity:0.3; cursor:not-allowed; pointer-events:none; }
+  /* ADMIN PANEL */
+  #adminPanel { display:none; flex:1; overflow-y:auto; padding:24px 20px; flex-direction:column; gap:24px; }
+  #adminPanel.visible { display:flex; }
+  #shippedPanel  { display:none; flex:1; overflow-y:auto; flex-direction:column; }
+  #shippedPanel.visible  { display:flex; }
+  #archivePanel  { display:none; flex:1; overflow-y:auto; flex-direction:column; }
+  #archivePanel.visible  { display:flex; }
+
+  /* Delay notice modal */
+  .delay-modal-overlay { display:none; position:fixed; inset:0; background:rgba(30,41,59,0.75); z-index:9000; align-items:center; justify-content:center; padding:16px; }
+  .delay-modal-overlay.open { display:flex; }
+  .delay-modal { background:var(--surface); border:1px solid var(--border2); border-radius:12px; width:500px; max-width:100%; max-height:90dvh; overflow-y:auto; padding:24px; position:relative; }
+  .delay-modal-title { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .delay-notice-box { font-family:var(--mono); font-size:11px; background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:14px; color:var(--text); line-height:1.7; white-space:pre-wrap; resize:vertical; width:100%; min-height:160px; outline:none; }
+  .delay-notice-box:focus { border-color:var(--amber); }
+  .delay-info-row { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .delay-info-chip { font-family:var(--mono); font-size:9px; font-weight:600; padding:4px 10px; border-radius:6px; border:1px solid var(--border2); background:var(--bg); color:var(--text2); }
+  .delay-info-chip.warn { border-color:rgba(245,158,11,0.4); background:#fffbeb; color:#92400e; }
+  .sales-hint { font-family:var(--mono); font-size:9px; color:var(--text3); margin-top:8px; padding:8px 10px; background:rgba(245,158,11,0.06); border:1px dashed rgba(245,158,11,0.3); border-radius:6px; }
+  .shipped-toolbar { background:var(--surface); border-bottom:1px solid var(--border); padding:10px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0; flex-wrap:wrap; }
+  .shipped-stat { font-family:var(--mono); font-size:10px; color:var(--text3); background:#f0fdf4; border:1px solid #bbf7d0; border-radius:100px; padding:4px 12px; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .shipped-stat span { color:#16a34a; font-weight:700; }
+  .shipped-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:80px 20px; color:var(--text3); font-family:var(--mono); font-size:12px; text-align:center; flex:1; }
+  .shipped-table-wrap { flex:1; overflow:auto; }
+  .shipped-row-highlight { background:#f0fdf4 !important; }
+  .shipped-badge { display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:3px 9px; border-radius:100px; background:#16a34a; color:#fff; border:1px solid #15803d; }
+  .admin-section-title { font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--purple); border-bottom:1px solid rgba(139,92,246,0.25); padding-bottom:8px; margin-bottom:14px; }
+  .admin-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px 20px; }
+  .accounts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+  .account-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; transition:border-color 0.15s; }
+  .account-card:hover { border-color:var(--border2); }
+  .account-card-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .account-card-left { display:flex; align-items:center; gap:10px; }
+  .account-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12px; font-weight:600; color:#fff; flex-shrink:0; }
+  .account-name { font-family:var(--sans); font-size:13px; font-weight:600; color:var(--text); }
+  .account-username { font-family:var(--mono); font-size:10px; color:var(--text3); margin-top:1px; }
+  .account-details { display:grid; grid-template-columns:1fr 1fr; gap:6px 12px; border-top:1px solid var(--border); padding-top:10px; }
+  .account-detail-item { display:flex; flex-direction:column; gap:2px; }
+  .account-detail-label { font-family:var(--mono); font-size:8px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); }
+  .account-detail-value { font-family:var(--mono); font-size:11px; color:var(--text2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .account-card-actions { display:flex; gap:6px; border-top:1px solid var(--border); padding-top:10px; }
+  .acct-btn { font-family:var(--mono); font-size:9px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; padding:5px 10px; border-radius:5px; border:1px solid var(--border2); background:var(--surface2); color:var(--text3); cursor:pointer; transition:all 0.15s; flex:1; text-align:center; }
+  .acct-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .acct-btn.danger:hover { border-color:var(--red); color:var(--red); }
+  .acct-btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .new-account-form { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:500px) { .new-account-form { grid-template-columns:1fr; } }
+  .color-picker-row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .color-swatch { width:22px; height:22px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:transform 0.12s,border-color 0.12s; flex-shrink:0; }
+  .color-swatch:hover { transform:scale(1.15); }
+  .color-swatch.selected { border-color:var(--text); transform:scale(1.1); }
+  .you-badge { font-family:var(--mono); font-size:8px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:2px 7px; border-radius:100px; color:var(--accent); border:1px solid rgba(37,99,235,0.3); background:rgba(37,99,235,0.08); flex-shrink:0; }
+  .col-assyclass{width:150px;} .col-pinori{width:160px;}
+  .col-aprice{width:130px;} .col-taprice{width:150px;} .col-cprice{width:130px;} .col-tcprice{width:150px;}
+  td.price-cell { color:#047857 !important; font-variant-numeric:tabular-nums; font-weight:500; }
+  td.price-cell.locked { color:#6b9bb8 !important; background:#f8fafc; }
+  th.g-pricing { color:#0891b2 !important; border-bottom-color:rgba(8,145,178,0.5) !important; }
+  th.g-planner { color:#7c3aed !important; border-bottom-color:rgba(124,58,237,0.5) !important; }
+  td.o-planner { border-left:2px solid rgba(124,58,237,0.2); }
+  td.o-pricing { border-left:2px solid rgba(34,211,238,0.2); }
+  .price-input-wrap { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; z-index:10; }
+  .price-input-wrap span { font-family:var(--mono); font-size:11px; color:var(--text3); padding-left:6px; pointer-events:none; }
+
+  /* ── TAKT COLUMNS ── */
+  .col-aprice2{width:130px;}
+  .col-npins{width:90px;} .col-nscrews{width:90px;}
+  .col-takt-pi{width:110px;} .col-takt-pinins{width:120px;} .col-takt-pinchk{width:130px;}
+  .col-takt-assy{width:110px;} .col-takt-iss{width:110px;} .col-takt-screw{width:110px;}
+  .col-takt-pkg{width:110px;} .col-takt-fi{width:120px;}
+  .col-takt-total{width:120px;} .col-takt-qc{width:110px;}
+  th.g-takt { color:#0369a1 !important; border-bottom-color:rgba(3,105,161,0.5) !important; }
+  th.g-takt-total { color:#be185d !important; border-bottom-color:rgba(190,24,93,0.5) !important; background:#fff8fb !important; font-weight:700 !important; }
+  td.o-takt { border-left:2px solid rgba(3,105,161,0.15); }
+  td.o-takt-total { border-left:2px solid rgba(190,24,93,0.2); background:#fff8fb; font-weight:600; color:#be185d !important; }
+  td.takt-num { font-variant-numeric:tabular-nums; text-align:right; padding-right:14px; }
+  td.takt-disabled { background:rgba(0,0,0,0.04); color:var(--text3) !important; cursor:not-allowed; font-style:italic; }
+  td.takt-disabled::after { display:none !important; }
+
+  /* ── WEEKLY PLAN ── */
+  .wp-day-col { flex:1; min-width:155px; display:flex; flex-direction:column; border-right:1px solid var(--border); }
+  .wp-day-col:last-child { border-right:none; }
+  .wp-day-header { position:sticky; top:0; z-index:10; background:var(--surface); border-bottom:2px solid var(--border); padding:10px 12px 8px; display:flex; flex-direction:column; gap:3px; }
+  .wp-day-header.today { border-bottom-color:var(--accent); background:#eff6ff; }
+  .wp-day-header.weekend { background:var(--bg); }
+  .wp-day-name { font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); }
+  .wp-day-header.today .wp-day-name { color:var(--accent); }
+  .wp-day-date { font-family:var(--mono); font-size:20px; font-weight:600; color:var(--text); line-height:1; }
+  .wp-day-header.today .wp-day-date { color:var(--accent); }
+  .wp-day-badge { display:inline-block; font-family:var(--mono); font-size:8px; font-weight:700; padding:1px 7px; border-radius:100px; background:var(--border); color:var(--text3); align-self:flex-start; margin-top:2px; }
+  .wp-day-badge.has-assy { background:rgba(124,58,237,0.12); color:var(--purple); }
+  .wp-day-badge.has-qc   { background:rgba(8,145,178,0.12); color:#0891b2; }
+  .wp-day-badge.has-both { background:rgba(16,185,129,0.12); color:var(--green); }
+  .wp-day-badge.has-overdue { background:rgba(220,38,38,0.12); color:var(--red); }
+  .wp-day-items { flex:1; padding:8px; display:flex; flex-direction:column; gap:6px; overflow-y:auto; min-height:80px; }
+  .wp-day-col.weekend .wp-day-items { background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(0,0,0,0.01) 8px,rgba(0,0,0,0.01) 16px); }
+  .wp-empty-day { display:flex; align-items:center; justify-content:center; flex:1; font-family:var(--mono); font-size:10px; color:var(--text3); opacity:0.4; padding:20px 0; }
+  .wp-card { background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:9px 11px; cursor:pointer; transition:box-shadow 0.15s,border-color 0.15s,transform 0.1s; border-left:3px solid var(--accent); }
+  .wp-card:hover { box-shadow:0 2px 8px rgba(0,0,0,0.1); border-color:var(--border2); transform:translateY(-1px); }
+  .wp-card.type-assy { border-left-color:var(--purple); }
+  .wp-card.type-qc   { border-left-color:#0891b2; }
+  .wp-card.type-both { border-left-color:var(--green); }
+  .wp-card.status-delayed     { background:#fff8f8; }
+  .wp-card.status-complete    { background:#f0fdf4; }
+  .wp-card.status-in-progress { }
+  .wp-card-type-badge { font-family:var(--mono); font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:2px 6px; border-radius:4px; display:inline-block; margin-bottom:4px; }
+  .wp-card-type-badge.assy { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.25); }
+  .wp-card-type-badge.qc   { background:rgba(8,145,178,0.1); color:#0891b2; border:1px solid rgba(8,145,178,0.25); }
+  .wp-card-type-badge.both { background:rgba(16,185,129,0.1); color:var(--green); border:1px solid rgba(16,185,129,0.25); }
+  .wp-card-site  { font-family:var(--mono); font-size:8px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); margin-bottom:2px; }
+  .wp-card-cpo   { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--text); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wp-card-ident { font-family:var(--sans); font-size:10px; color:var(--text2); margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .wp-card-meta  { display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
+  .wp-meta-chip  { font-family:var(--mono); font-size:8px; padding:2px 6px; border-radius:4px; border:1px solid var(--border); background:var(--bg); color:var(--text2); white-space:nowrap; }
+  .wp-meta-chip.qty     { border-color:rgba(37,99,235,0.3); background:rgba(37,99,235,0.06); color:var(--accent); }
+  .wp-meta-chip.assy    { border-color:rgba(124,58,237,0.3); background:rgba(124,58,237,0.06); color:var(--purple); }
+  .wp-meta-chip.overdue { border-color:rgba(220,38,38,0.3); background:rgba(220,38,38,0.06); color:var(--red); font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN OVERLAY ── -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-dot"></div>
+      <span class="login-logo-text">Order Tracking List</span>
+    </div>
+    <div class="login-heading">Welcome back</div>
+    <div class="login-sub">Sign in to set your role and access level</div>
+
+    <div class="login-field">
+      <label class="login-label">Username</label>
+      <input class="login-input" id="loginUser" type="text" placeholder="username" autocomplete="username" autocapitalize="none"/>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Password</label>
+      <input class="login-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <div class="login-error" id="loginError">Incorrect username or password.</div>
+    <button class="login-btn" onclick="attemptLogin()">Sign In</button>
+
+    <div class="login-divider">
+      <div class="login-divider-line"></div>
+      <span class="login-divider-text">Demo accounts</span>
+      <div class="login-divider-line"></div>
+    </div>
+    <div class="hint-users" id="hintUsers"></div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    <span class="logo-text">Order Tracking List</span>
+  </div>
+  <div class="topbar-divider"></div>
+  <div class="role-switcher" id="roleSwitcher">
+    <button class="role-btn active" data-role="admin"     onclick="setRole('admin')">Admin</button>
+    <button class="role-btn"        data-role="planner"   onclick="setRole('planner')">Planner</button>
+    <button class="role-btn"        data-role="inventory" onclick="setRole('inventory')">Inventory</button>
+    <button class="role-btn"        data-role="logistics" onclick="setRole('logistics')">Logistics</button>
+    <button class="role-btn"        data-role="purchaser" onclick="setRole('purchaser')">Purchaser</button>
+    <button class="role-btn"        data-role="sales"     onclick="setRole('sales')">Sales</button>
+  </div>
+  <div class="topbar-right">
+    <!-- user chip (hidden until logged in) -->
+    <div class="user-chip" id="userChip" style="display:none;">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <span class="user-name-display" id="userNameDisplay"></span>
+    </div>
+    <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logout()">Sign out</button>
+    <span class="role-indicator ri-admin" id="roleIndicator">Admin</span>
+    <div class="stat-pill">Total: <span id="stat-total">0</span></div>
+    <div class="stat-pill hide-xs">Open: <span id="stat-open">0</span></div>
+    <div class="stat-pill hide-xs">At Risk: <span id="stat-risk">0</span></div>
+  </div>
+</div>
+
+<!-- PAGE TABS -->
+<div class="page-tabs" id="pageTabs">
+  <button class="page-tab active" id="tab-orders" onclick="switchTab('orders')">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+    Orders
+  </button>
+  <button class="page-tab admin-tab locked-tab" id="tab-admin" onclick="switchTab('admin')">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    User Management
+  </button>
+  <button class="page-tab shipped-tab" id="tab-shipped" onclick="switchTab('shipped')">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12H3l9-9 9 9h-2"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6h6v6"/></svg>
+    Shipped Items <span id="shippedTabCount" style="font-family:var(--mono);font-size:8px;background:#16a34a;color:#fff;border-radius:100px;padding:1px 6px;margin-left:3px;display:none;">0</span>
+  </button>
+  <button class="page-tab archive-tab" id="tab-archive" onclick="switchTab('archive')">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 002 2h12a2 2 0 002-2V8"/><path d="M10 12h4"/></svg>
+    Archived <span id="archiveTabCount" style="font-family:var(--mono);font-size:8px;background:#7c3aed;color:#fff;border-radius:100px;padding:1px 6px;margin-left:3px;display:none;">0</span>
+  </button>
+  <button class="page-tab" id="tab-sales-delay" onclick="switchTab('sales-delay')" style="display:none;color:#92400e;">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    Delay Notices <span id="salesDelayBadge" style="font-family:var(--mono);font-size:8px;background:var(--amber);color:#fff;border-radius:100px;padding:1px 6px;margin-left:3px;display:none;">0</span>
+  </button>
+  <button class="page-tab" id="tab-weekly-plan" onclick="switchTab('weekly-plan')">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Weekly Plan
+  </button>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-row1">
+    <div class="search-wrap">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search orders..." oninput="filterRows()"/>
+    </div>
+    <select class="filter-select" id="siteFilter" onchange="filterRows()"><option value="">All sites</option></select>
+    <select class="filter-select" id="statusFilter" onchange="filterRows()">
+      <option value="">All statuses</option>
+      <option>Open</option><option>In Progress</option><option>Complete</option><option>Delayed</option><option>Pending</option>
+    </select>
+    <div class="view-toggle" id="viewToggle">
+      <button class="view-btn active" id="vBtn-table" onclick="setView('table')" title="List View">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+        <span class="view-btn-label">List</span>
+      </button>
+      <button class="view-btn" id="vBtn-cards" onclick="setView('cards')" title="Card View">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="view-btn-label">Cards</span>
+      </button>
+    </div>
+    <button class="toolbar-btn" onclick="exportCSV()">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      <span class="export-btn-text">Export CSV</span>
+    </button>
+    <button class="toolbar-btn primary" id="addRowBtn" onclick="openAddModal()">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Add Order
+    </button>
+  </div>
+</div>
+
+<div class="content-area">
+  <div class="table-container" id="tableView">
+    <table>
+      <colgroup>
+        <col class="col-cb"/><col class="col-site"/><col class="col-cpo"/><col class="col-apo"/>
+        <col class="col-prs"/><col class="col-qty"/><col class="col-assy"/><col class="col-ident"/>
+        <col class="col-pn"/><col class="col-dn"/><col class="col-rev"/>
+        <col class="col-istat"/><col class="col-pstat"/>
+        <col class="col-crdd"/><col class="col-ardd"/><col class="col-etf"/><col class="col-eta"/>
+        <col class="col-sinv"/><col class="col-ainv"/><col class="col-awb"/><col class="col-peta"/>
+        <col class="col-etd"/>
+        <col style="width:140px;"/><col style="width:130px;"/>
+        <col class="col-assyclass"/><col class="col-pinori"/><col class="col-aprice"/><col class="col-taprice"/><col class="col-cprice"/><col class="col-tcprice"/>
+        <col class="col-aprice2"/><col class="col-npins"/><col class="col-nscrews"/>
+        <col class="col-takt-pi"/><col class="col-takt-pinins"/><col class="col-takt-pinchk"/>
+        <col class="col-takt-assy"/><col class="col-takt-iss"/><col class="col-takt-screw"/>
+        <col class="col-takt-pkg"/><col class="col-takt-fi"/>
+        <col class="col-takt-total"/><col class="col-takt-qc"/>
+        <col class="col-files"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th><input type="checkbox" class="cb" id="selectAll" onchange="toggleAll(this)"/></th>
+          <th class="frozen-h" onclick="sortBy('site')">Site <span class="sort-icon" id="sort-site">↕</span></th>
+          <th onclick="sortBy('cpo')">Customer PO# <span class="sort-icon" id="sort-cpo">↕</span></th>
+          <th onclick="sortBy('apo')">Alliance PO# <span class="sort-icon" id="sort-apo">↕</span></th>
+          <th onclick="sortBy('prs')">PRS# <span class="sort-icon" id="sort-prs">↕</span></th>
+          <th onclick="sortBy('qty')">QTY <span class="sort-icon" id="sort-qty">↕</span></th>
+          <th onclick="sortBy('assy')">Assy Type <span class="sort-icon" id="sort-assy">↕</span></th>
+          <th onclick="sortBy('ident')">Identification <span class="sort-icon" id="sort-ident">↕</span></th>
+          <th onclick="sortBy('pn')">Part Number <span class="sort-icon" id="sort-pn">↕</span></th>
+          <th onclick="sortBy('dn')">Drawing# <span class="sort-icon" id="sort-dn">↕</span></th>
+          <th onclick="sortBy('rev')">Rev <span class="sort-icon" id="sort-rev">↕</span></th>
+          <th class="g-inventory" onclick="sortBy('issuanceStatus')">Issuance Status <span class="sort-icon" id="sort-issuanceStatus">↕</span></th>
+          <th class="g-project"   onclick="sortBy('projectStatus')">Project Status <span class="sort-icon" id="sort-projectStatus">↕</span></th>
+          <th onclick="sortBy('crdd')">Customer RDD <span class="sort-icon" id="sort-crdd">↕</span></th>
+          <th onclick="sortBy('ardd')">Alliance RDD <span class="sort-icon" id="sort-ardd">↕</span></th>
+          <th onclick="sortBy('etf')">ETF <span class="sort-icon" id="sort-etf">↕</span></th>
+          <th onclick="sortBy('eta')">ETA <span class="sort-icon" id="sort-eta">↕</span></th>
+          <th onclick="sortBy('dateAssy')" style="color:#7c3aed;">🔧 Date of Assembly <span class="sort-icon" id="sort-dateAssy">↕</span></th>
+          <th onclick="sortBy('dateQc')" style="color:#0891b2;">🔍 Date of QC <span class="sort-icon" id="sort-dateQc">↕</span></th>
+          <th class="g-logistics" onclick="sortBy('shipmentInvoice')">Shipment Invoice <span class="sort-icon" id="sort-shipmentInvoice">↕</span></th>
+          <th class="g-logistics" onclick="sortBy('assyInvoice')">Assy Invoice <span class="sort-icon" id="sort-assyInvoice">↕</span></th>
+          <th class="g-logistics" onclick="sortBy('awb')">AWB <span class="sort-icon" id="sort-awb">↕</span></th>
+          <th class="g-purchaser" onclick="sortBy('partsEta')">Parts ETA <span class="sort-icon" id="sort-partsEta">↕</span></th>
+          <th class="g-etd" onclick="sortBy('etd')">ETD (Shipment Date) <span class="sort-icon" id="sort-etd">↕</span></th>
+          <th class="g-planner" onclick="sortBy('assyClassification')">Assy Classification <span class="sort-icon" id="sort-assyClassification">&#x2195;</span></th>
+          <th class="g-planner" onclick="sortBy('pinOrientation')">Pin Orientation <span class="sort-icon" id="sort-pinOrientation">&#x2195;</span></th>
+          <th class="g-pricing" onclick="sortBy('alliancePrice')">Alliance Price (USD) <span class="sort-icon" id="sort-alliancePrice">&#x2195;</span></th>
+          <th class="g-pricing" onclick="sortBy('totalAlliancePrice')">Total Alliance Price <span class="sort-icon" id="sort-totalAlliancePrice">&#x2195;</span></th>
+          <th class="g-pricing" onclick="sortBy('customerPrice')">Customer Price (USD) <span class="sort-icon" id="sort-customerPrice">&#x2195;</span></th>
+          <th class="g-pricing" onclick="sortBy('totalCustomerPrice')">Total Customer Price <span class="sort-icon" id="sort-totalCustomerPrice">&#x2195;</span></th>
+          <th class="g-pricing" onclick="sortBy('assyPrice')">Assembly Price (USD) <span class="sort-icon" id="sort-assyPrice">&#x2195;</span></th>
+          <th class="g-planner" onclick="sortBy('numPins')"># Pins <span class="sort-icon" id="sort-numPins">&#x2195;</span></th>
+          <th class="g-planner" onclick="sortBy('numScrews')"># Screws <span class="sort-icon" id="sort-numScrews">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktPartsInspection')">Parts Inspection <span class="sort-icon" id="sort-taktPartsInspection">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktPinInsertion')">Pin Insertion Takt <span class="sort-icon" id="sort-taktPinInsertion">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktPinInspection')">Pin Inspection Takt <span class="sort-icon" id="sort-taktPinInspection">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktAssembly')">Assembly Takt <span class="sort-icon" id="sort-taktAssembly">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktIssuance')">Issuance Takt <span class="sort-icon" id="sort-taktIssuance">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktScrewing')">Screwing Takt <span class="sort-icon" id="sort-taktScrewing">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktPackaging')">Packaging Takt <span class="sort-icon" id="sort-taktPackaging">&#x2195;</span></th>
+          <th class="g-takt" onclick="sortBy('taktFinalInspection')">Final Inspection (QC) <span class="sort-icon" id="sort-taktFinalInspection">&#x2195;</span></th>
+          <th class="g-takt-total" onclick="sortBy('totalAssyTakt')">Total Assy Takt <span class="sort-icon" id="sort-totalAssyTakt">&#x2195;</span></th>
+          <th class="g-takt-total" onclick="sortBy('totalQcTakt')">Total QC Takt <span class="sort-icon" id="sort-totalQcTakt">&#x2195;</span></th>
+          <th>Files</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div class="cards-container" id="cardsView"></div>
+</div>
+
+<div class="statusbar">
+  <div class="statusbar-item">Rows: <span class="val" id="sb-rows">0</span></div>
+  <div class="statusbar-item hide-sm">Selected: <span class="val" id="sb-selected">0</span></div>
+  <div class="statusbar-item hide-sm">Role: <span class="val" id="sb-role">Admin</span></div>
+  <div class="statusbar-item hide-sm">Last edit: <span class="val" id="sb-edit">—</span></div>
+  <div class="live-badge"><div class="live-dot"></div> Live</div>
+</div>
+
+<button class="fab" onclick="openAddModal()" id="fabBtn">+</button>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+      <span id="modalTitle">New Order</span>
+    </div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-section">Order Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Site</label><input class="form-input" id="f-site" placeholder="PHX-01"/></div>
+      <div class="form-group"><label class="form-label">QTY</label><input class="form-input" id="f-qty" type="number" min="1" placeholder="1" inputmode="numeric" oninput="updateModalTotals()"/></div>
+      <div class="form-group"><label class="form-label">Customer PO#</label><input class="form-input" id="f-cpo" placeholder="CPO-XXXXXX"/></div>
+      <div class="form-group"><label class="form-label">Alliance PO#</label><input class="form-input" id="f-apo" placeholder="APO-XXXXXX"/></div>
+      <div class="form-group"><label class="form-label">PRS#</label><input class="form-input" id="f-prs" placeholder="PRS-XXXXXX"/></div>
+      <div class="form-group"><label class="form-label">Assy Type</label><input class="form-input" id="f-assy" placeholder="e.g. Mechanical"/></div>
+      <div class="form-group"><label class="form-label">Identification</label><input class="form-input" id="f-ident" placeholder="e.g. Main Frame"/></div>
+      <div class="form-group"><label class="form-label">Part Number</label><input class="form-input" id="f-pn" placeholder="PN-XXXXXXXX"/></div>
+      <div class="form-group"><label class="form-label">Drawing Number</label><input class="form-input" id="f-dn" placeholder="DWG-XXXXXXXX"/></div>
+      <div class="form-group"><label class="form-label">Revision</label><input class="form-input" id="f-rev" placeholder="A"/></div>
+      <div class="form-group"><label class="form-label">Customer RDD</label><input class="form-input" id="f-crdd" type="date"/></div>
+      <div class="form-group"><label class="form-label">Alliance RDD</label><input class="form-input" id="f-ardd" type="date"/></div>
+      <div class="form-group"><label class="form-label">ETF</label><input class="form-input" id="f-etf" type="date"/></div>
+      <div class="form-group"><label class="form-label">ETA</label><input class="form-input" id="f-eta" type="date"/></div>
+      <div class="form-group"><label class="form-label" style="color:#7c3aed;font-weight:700;">🔧 Date of Assembly</label><input class="form-input" id="f-dateAssy" type="date" style="border-color:rgba(124,58,237,0.4);background:#faf5ff;"/></div>
+      <div class="form-group"><label class="form-label" style="color:#0891b2;font-weight:700;">🔍 Date of QC</label><input class="form-input" id="f-dateQc" type="date" style="border-color:rgba(8,145,178,0.4);background:#f0f9ff;"/></div>
+    </div>
+    <div class="modal-section inventory">Inventory</div>
+    <div class="form-grid">
+      <div class="form-group full"><label class="form-label">Issuance Status</label>
+        <select class="form-select" id="f-issuanceStatus"><option>Open</option><option>In Progress</option><option>Pending</option><option>Complete</option><option>Delayed</option></select>
+      </div>
+    </div>
+    <div class="modal-section project">Project Status</div>
+    <div class="form-grid">
+      <div class="form-group full"><label class="form-label">Project Status</label>
+        <select class="form-select" id="f-projectStatus"><option>On Track</option><option>At Risk</option><option>Delayed</option><option>Complete</option><option>Closed</option><option>Delivered</option><option>Cancelled</option><option>Forwarded to Stock</option></select>
+      </div>
+    </div>
+    <div class="modal-section logistics">Logistics</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Shipment Invoice</label><input class="form-input" id="f-shipmentInvoice" placeholder="SI-XXXXXXXX"/></div>
+      <div class="form-group"><label class="form-label">Assy Invoice</label><input class="form-input" id="f-assyInvoice" placeholder="AI-XXXXXXXX"/></div>
+      <div class="form-group full"><label class="form-label">AWB</label><input class="form-input" id="f-awb" placeholder="AWB-XXXXXXXX"/></div>
+    </div>
+    <div class="modal-section purchaser">Purchaser</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Parts ETA</label><input class="form-input" id="f-partsEta" type="date"/></div>
+      <div class="form-group"><label class="form-label" style="color:#b45309;font-weight:700;">&#x1F4E6; ETD (Shipment Date)</label><input class="form-input" id="f-etd" type="date" style="border-color:rgba(180,83,9,0.4);background:#fffbeb;"/></div>
+    </div>
+    <div class="modal-section" style="color:#7c3aed;border-bottom-color:rgba(124,58,237,0.3);">Classification & Orientation</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Assy Classification</label>
+        <select class="form-select" id="f-assyClassification">
+          <option value="">— Select —</option>
+          <option>Jaguar</option><option>Strip</option><option>OTQ</option><option>QFN</option><option>BGAT</option><option>WCSP</option><option>FP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pin Orientation</label>
+        <select class="form-select" id="f-pinOrientation" onchange="updateModalTaktTotals()">
+          <option value="">— Select —</option>
+          <option>With Orientation</option><option>Without Orientation</option><option>N/A</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-section" style="color:#0891b2;border-bottom-color:rgba(8,145,178,0.3);">Pricing (USD)</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Alliance Price (USD)</label><input class="form-input" id="f-alliancePrice" type="number" min="0" step="0.01" placeholder="0.00" oninput="updateModalTotals()"/></div>
+      <div class="form-group"><label class="form-label">Total Alliance Price</label><input class="form-input" id="f-totalAlliancePrice" readonly style="opacity:0.6;cursor:default;" placeholder="Auto-calculated"/></div>
+      <div class="form-group"><label class="form-label">Customer Price (USD)</label><input class="form-input" id="f-customerPrice" type="number" min="0" step="0.01" placeholder="0.00" oninput="updateModalTotals()"/></div>
+      <div class="form-group"><label class="form-label">Total Customer Price</label><input class="form-input" id="f-totalCustomerPrice" readonly style="opacity:0.6;cursor:default;" placeholder="Auto-calculated"/></div>
+      <div class="form-group full"><label class="form-label">Assembly Price (USD)</label><input class="form-input" id="f-assyPrice" type="number" min="0" step="0.01" placeholder="0.00"/></div>
+    </div>
+    <div class="modal-section" style="color:#7c3aed;border-bottom-color:rgba(124,58,237,0.3);">Parts Count</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label"># of Pins</label><input class="form-input" id="f-numPins" type="number" min="0" step="1" placeholder="0" inputmode="numeric"/></div>
+      <div class="form-group"><label class="form-label"># of Screws</label><input class="form-input" id="f-numScrews" type="number" min="0" step="1" placeholder="0" inputmode="numeric"/></div>
+    </div>
+    <div class="modal-section" style="color:#0369a1;border-bottom-color:rgba(3,105,161,0.4);">Takt Times (seconds per unit)</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Parts Inspection</label><input class="form-input" id="f-taktPartsInspection" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Pin Insertion Takt</label><input class="form-input" id="f-taktPinInsertion" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Pin Inspection Takt <span style="font-size:8px;color:var(--orange);font-weight:600;">(Pin types only)</span></label><input class="form-input" id="f-taktPinInspection" type="number" min="0" step="0.5" placeholder="0" disabled style="opacity:0.3;" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Assembly Takt</label><input class="form-input" id="f-taktAssembly" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Issuance Takt</label><input class="form-input" id="f-taktIssuance" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Screwing Takt</label><input class="form-input" id="f-taktScrewing" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Packaging Takt</label><input class="form-input" id="f-taktPackaging" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+      <div class="form-group"><label class="form-label">Final Inspection (QC Takt)</label><input class="form-input" id="f-taktFinalInspection" type="number" min="0" step="0.5" placeholder="0" oninput="updateModalTaktTotals()"/></div>
+    </div>
+    <div class="modal-section" style="color:#be185d;border-bottom-color:rgba(190,24,93,0.3);">Computed Takt Totals</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Total Assy Takt <span style="font-size:8px;color:var(--text3);">(Pin Ins+Pin Chk+Assy+Iss+Screw+Pkg)</span></label><input class="form-input" id="f-totalAssyTakt" readonly style="opacity:0.7;cursor:default;font-weight:600;color:#be185d;" placeholder="Auto-calculated"/></div>
+      <div class="form-group"><label class="form-label">Total QC Takt <span style="font-size:8px;color:var(--text3);">(Parts Insp + Final Insp)</span></label><input class="form-input" id="f-totalQcTakt" readonly style="opacity:0.7;cursor:default;font-weight:600;color:#be185d;" placeholder="Auto-calculated"/></div>
+    </div>
+    <div id="modalAccessNote" style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:12px;padding:8px 10px;background:rgba(0,0,0,0.04);border-radius:6px;border:1px dashed var(--border2);display:none;"></div>
+    <div class="modal-actions">
+      <button class="toolbar-btn" onclick="closeModal()">Cancel</button>
+      <button class="toolbar-btn primary" id="saveBtn" onclick="saveOrder()">Save Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILES MODAL -->
+<div class="modal-overlay" id="filesModal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+      Attachments — <span id="filesRowLabel"></span>
+    </div>
+    <button class="modal-close" onclick="closeFilesModal()">✕</button>
+    <div class="files-list" id="filesList"></div>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <input type="file" id="fileInput" multiple onchange="handleFileInput(event)"/>
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 8px;display:block;opacity:0.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      Click or tap to attach files
+    </div>
+    <div class="modal-actions"><button class="toolbar-btn primary" onclick="closeFilesModal()">Done</button></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <!-- Create New Account -->
+  <div class="admin-card">
+    <div class="admin-section-title">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:5px"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Create New Account
+    </div>
+    <div class="new-account-form">
+      <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="na-name" placeholder="e.g. Jane Smith"/></div>
+      <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="na-user" placeholder="e.g. jane_smith" autocapitalize="none"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="na-pass" type="password" placeholder="Min 6 characters"/></div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="na-role">
+          <option value="admin">Admin</option>
+          <option value="planner">Planner</option>
+          <option value="inventory">Inventory</option>
+          <option value="logistics">Logistics</option>
+          <option value="purchaser" selected>Purchaser</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Avatar Color</label>
+        <div class="color-picker-row" id="na-colorPicker"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+      <button class="toolbar-btn primary" onclick="createAccount()">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Create Account
+      </button>
+    </div>
+  </div>
+
+  <!-- All Accounts -->
+  <div class="admin-card">
+    <div class="admin-section-title">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:5px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+      All Accounts (<span id="accountCount">0</span>)
+    </div>
+    <div class="accounts-grid" id="accountsGrid"></div>
+  </div>
+</div>
+
+<!-- EDIT ACCOUNT MODAL -->
+<div class="modal-overlay" id="editAccountModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-title">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Edit Account
+    </div>
+    <button class="modal-close" onclick="closeEditAccount()">&#x2715;</button>
+    <div class="modal-section">Account Details</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="ea-name" placeholder="Display Name"/></div>
+      <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="ea-user" placeholder="username" autocapitalize="none"/></div>
+      <div class="form-group"><label class="form-label">New Password</label><input class="form-input" id="ea-pass" type="password" placeholder="Leave blank to keep current"/></div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="ea-role">
+          <option value="admin">Admin</option>
+          <option value="planner">Planner</option>
+          <option value="inventory">Inventory</option>
+          <option value="logistics">Logistics</option>
+          <option value="purchaser">Purchaser</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Avatar Color</label>
+        <div class="color-picker-row" id="ea-colorPicker"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="toolbar-btn" onclick="closeEditAccount()">Cancel</button>
+      <button class="toolbar-btn primary" onclick="saveEditAccount()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- SALES DELAY PANEL -->
+<div id="salesDelayPanel" style="display:none;flex:1;overflow-y:auto;flex-direction:column;">
+  <div class="shipped-toolbar" style="border-bottom-color:#fde68a;">
+    <div class="shipped-stat" style="border-color:rgba(245,158,11,0.4);background:#fffbeb;"><span id="sales-notice-count" style="color:#92400e;font-weight:700;">0</span>&nbsp;Delay Notices</div>
+    <div style="margin-left:auto;">
+      <button class="toolbar-btn" onclick="exportDelayCSV()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Export CSV
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- WEEKLY PLAN PANEL -->
+<div id="weeklyPlanPanel" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
+  <div class="shipped-toolbar" style="border-bottom-color:#ddd6fe;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="toolbar-btn" onclick="weeklyPlanNav(-1)" title="Previous Week">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span id="wpWeekLabel" style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;min-width:210px;text-align:center;"></span>
+      <button class="toolbar-btn" onclick="weeklyPlanNav(1)" title="Next Week">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <button class="toolbar-btn" onclick="weeklyPlanGoToday()" style="font-size:9px;letter-spacing:0.05em;">Today</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <div class="shipped-stat" style="border-color:rgba(124,58,237,0.3);background:#faf5ff;"><span id="wp-assy-count" style="color:var(--purple);font-weight:700;">0</span>&nbsp;Assembly</div>
+      <div class="shipped-stat" style="border-color:rgba(8,145,178,0.3);background:#f0f9ff;"><span id="wp-qc-count" style="color:#0891b2;font-weight:700;">0</span>&nbsp;QC</div>
+      <div class="shipped-stat" style="border-color:rgba(220,38,38,0.3);background:#fff8f8;"><span id="wp-overdue-count" style="color:var(--red);font-weight:700;">0</span>&nbsp;Overdue</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <label style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;">Site:</label>
+      <select class="filter-select" id="wpSiteFilter" onchange="renderWeeklyPlan()" style="font-size:10px;padding:4px 8px;"><option value="">All Sites</option></select>
+      <button class="toolbar-btn" onclick="exportWeeklyPlanCSV()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Export CSV
+      </button>
+    </div>
+  </div>
+  <div id="weeklyPlanBody" style="flex:1;overflow:auto;display:flex;gap:0;"></div>
+</div>
+
+<!-- SHIPPED ITEMS PANEL -->
+<div id="shippedPanel">
+  <div class="shipped-toolbar">
+    <div class="shipped-stat">Shipped: <span id="shipped-count">0</span></div>
+    <div class="shipped-stat">Total Value: <span id="shipped-value">—</span></div>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button class="toolbar-btn" onclick="exportShippedCSV()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Export CSV
+      </button>
+      <button class="toolbar-btn" style="border-color:rgba(220,38,38,0.3);color:var(--red);" onclick="confirmClearShipped()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Clear All
+      </button>
+    </div>
+  </div>
+  <div class="shipped-table-wrap">
+    <table id="shippedTable" style="border-collapse:collapse;min-width:100%;table-layout:fixed;">
+      <colgroup>
+        <col style="width:90px;"/><col style="width:130px;"/><col style="width:130px;"/>
+        <col style="width:110px;"/><col style="width:60px;"/><col style="width:130px;"/>
+        <col style="width:130px;"/><col style="width:120px;"/><col style="width:120px;"/>
+        <col style="width:120px;"/><col style="width:130px;"/><col style="width:130px;"/>
+        <col style="width:130px;"/><col style="width:150px;"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Site</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Customer PO#</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Alliance PO#</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">PRS#</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">QTY</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Part Number</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Identification</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">ETD</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">AWB</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Shipment Invoice</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Customer Price</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Total Value</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Assy Invoice</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #bbf7d0;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Date Shipped</th>
+        </tr>
+      </thead>
+      <tbody id="shippedBody"></tbody>
+    </table>
+    <div class="shipped-empty" id="shippedEmpty">
+      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" style="opacity:0.25;color:#16a34a"><path d="M5 12H3l9-9 9 9h-2"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6h6v6"/></svg>
+      No shipped items yet.<br/>Items move here when Project Status is set to <strong>Delivered</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE PANEL (Cancelled + Forwarded to Stock) -->
+<div id="archivePanel">
+  <div class="shipped-toolbar">
+    <div class="shipped-stat" style="border-color:rgba(220,38,38,0.3);background:#fef2f2;color:#dc2626;"><span style="color:#dc2626;font-weight:700;" id="archive-cancelled-count">0</span>&nbsp;Cancelled</div>
+    <div class="shipped-stat" style="border-color:rgba(124,58,237,0.3);background:#f5f3ff;color:#7c3aed;"><span style="color:#7c3aed;font-weight:700;" id="archive-stock-count">0</span>&nbsp;Fwd to Stock</div>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button class="toolbar-btn" onclick="exportArchiveCSV()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Export CSV
+      </button>
+      <button class="toolbar-btn" style="border-color:rgba(220,38,38,0.3);color:var(--red);" onclick="confirmClearArchive()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Clear All
+      </button>
+    </div>
+  </div>
+  <!-- Filter tabs inside archive -->
+  <div style="display:flex;gap:2px;padding:8px 16px 0;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;">
+    <button id="arc-tab-all"       onclick="setArchiveFilter('all')"       style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--text3);border-bottom:2px solid #7c3aed;margin-bottom:-1px;color:#7c3aed;">All</button>
+    <button id="arc-tab-cancelled" onclick="setArchiveFilter('cancelled')" style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;">Cancelled</button>
+    <button id="arc-tab-stock"     onclick="setArchiveFilter('stock')"     style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;">Fwd to Stock</button>
+  </div>
+  <div class="shipped-table-wrap">
+    <table id="archiveTable" style="border-collapse:collapse;min-width:100%;table-layout:fixed;">
+      <colgroup>
+        <col style="width:110px;"/><col style="width:90px;"/><col style="width:130px;"/>
+        <col style="width:130px;"/><col style="width:110px;"/><col style="width:60px;"/>
+        <col style="width:130px;"/><col style="width:130px;"/><col style="width:120px;"/>
+        <col style="width:130px;"/><col style="width:130px;"/><col style="width:150px;"/>
+      </colgroup>
+      <thead id="archiveHead">
+        <tr>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Status</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Site</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Customer PO#</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Alliance PO#</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">PRS#</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">QTY</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Part Number</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Identification</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Customer Price</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Assy Classification</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Archived By</th>
+          <th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #ddd6fe;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#7c3aed;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">Date Archived</th>
+        </tr>
+      </thead>
+      <tbody id="archiveBody"></tbody>
+    </table>
+    <div class="shipped-empty" id="archiveEmpty" style="color:#7c3aed;">
+      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" style="opacity:0.25;color:#7c3aed"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 002 2h12a2 2 0 002-2V8"/><path d="M10 12h4"/></svg>
+      No archived items yet.<br/>Items move here when set to <strong>Cancelled</strong> or <strong>Forwarded to Stock</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- DELAY NOTICE MODAL -->
+<div class="delay-modal-overlay" id="delayModal">
+  <div class="delay-modal">
+    <div class="delay-modal-title">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Delay Notice — Sales Alert
+    </div>
+    <button class="modal-close" onclick="closeDelayModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3);padding:4px 8px;border-radius:4px;">✕</button>
+    <div class="delay-info-row" id="delayInfoRow"></div>
+    <div class="form-label" style="margin-bottom:6px;">Delay Notice Message</div>
+    <textarea class="delay-notice-box" id="delayNoticeText" rows="7"></textarea>
+    <div class="sales-hint" id="delayHint">
+      📧 This notice will be visible to the <strong>Sales</strong> team in their Delay Notices tab.
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <button class="toolbar-btn" onclick="closeDelayModal()">Cancel</button>
+      <button class="toolbar-btn primary" style="background:var(--amber);border-color:var(--amber);" onclick="confirmDelayNotice()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Send Delay Notice
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── USER ACCOUNTS ────────────────────────────────────────────
+// To add/change users, edit this array.
+const USERS = [
+  { username:'admin',     password:'admin123',  displayName:'Admin User',      role:'admin',     avatarColor:'#0ea5e9' },
+  { username:'planner1',  password:'plan456',   displayName:'Sarah Planner',   role:'planner',   avatarColor:'#14b8a6' },
+  { username:'inv_maria', password:'inv789',    displayName:'Maria Inventory', role:'inventory', avatarColor:'#10b981' },
+  { username:'log_dave',  password:'log321',    displayName:'Dave Logistics',  role:'logistics', avatarColor:'#f97316' },
+  { username:'purch_ko',  password:'pur654',    displayName:'Ko Purchaser',    role:'purchaser', avatarColor:'#8b5cf6' },
+  { username:'sales_rep', password:'sales789',  displayName:'Sales Rep',       role:'sales',     avatarColor:'#f59e0b' },
+];
+
+// ─── DROPDOWN OPTIONS ─────────────────────────────────────────
+const ASSY_CLASS_OPTS = ['Jaguar','Strip','OTQ','QFN','BGAT','WCSP','FP'];
+const PIN_ORI_OPTS    = ['With Orientation','Without Orientation','N/A'];
+
+// ─── ROLE DEFINITIONS ─────────────────────────────────────────
+const ROLES = {
+  admin:     { label:'Admin',     canAdd:true,  editableCols:'all',                                         color:'ri-admin' },
+  planner:   { label:'Planner',   canAdd:true,  editableCols:'all',                                         color:'ri-planner' },
+  inventory: { label:'Inventory', canAdd:false, editableCols:['issuanceStatus'],                             color:'ri-inventory' },
+  logistics: { label:'Logistics', canAdd:false, editableCols:['shipmentInvoice','assyInvoice','awb'],        color:'ri-logistics' },
+  purchaser: { label:'Purchaser', canAdd:false, editableCols:['partsEta'],                                   color:'ri-purchaser' },
+  sales:     { label:'Sales',     canAdd:false, editableCols:[],                                             color:'ri-sales' },
+};
+
+const COLS = [
+  { key:'site',            special:null,       owner:null },
+  { key:'cpo',             special:null,       owner:null },
+  { key:'apo',             special:null,       owner:null },
+  { key:'prs',             special:null,       owner:null },
+  { key:'qty',             special:null,       owner:null },
+  { key:'assy',            special:null,       owner:null },
+  { key:'ident',           special:null,       owner:null },
+  { key:'pn',              special:null,       owner:null },
+  { key:'dn',              special:null,       owner:null },
+  { key:'rev',             special:null,       owner:null },
+  { key:'issuanceStatus',  special:'issuance', owner:'inventory' },
+  { key:'projectStatus',   special:'project',  owner:'project' },
+  { key:'crdd',            special:'date',     owner:null },
+  { key:'ardd',            special:'date',     owner:null },
+  { key:'etf',             special:'date',     owner:null },
+  { key:'eta',             special:'date',     owner:null },
+  { key:'dateAssy',        special:'date',     owner:'planner' },
+  { key:'dateQc',          special:'date',     owner:'planner' },
+  { key:'shipmentInvoice', special:null,       owner:'logistics' },
+  { key:'assyInvoice',     special:null,       owner:'logistics' },
+  { key:'awb',             special:null,       owner:'logistics' },
+  { key:'partsEta',        special:'date',     owner:'purchaser' },
+  { key:'etd',             special:'date',     owner:'etd' },
+  { key:'alliancePrice',     special:'price',    owner:'pricing' },
+  { key:'totalAlliancePrice',special:'price-ro', owner:'pricing' },
+  { key:'customerPrice',     special:'price',    owner:'pricing' },
+  { key:'totalCustomerPrice',special:'price-ro', owner:'pricing' },
+  { key:'assyClassification', special:'dropdown',  owner:'planner' },
+  { key:'pinOrientation',     special:'dropdown',  owner:'planner' },
+  // New: Assembly Price, Pins, Screws
+  { key:'assyPrice',           special:'price',     owner:'pricing' },
+  { key:'numPins',             special:null,          owner:'planner' },
+  { key:'numScrews',           special:null,          owner:'planner' },
+  // Takt columns (minutes per unit)
+  { key:'taktPartsInspection', special:'takt',      owner:'takt' },
+  { key:'taktPinInsertion',    special:'takt',      owner:'takt' },
+  { key:'taktPinInspection',   special:'takt-pin',  owner:'takt' },
+  { key:'taktAssembly',        special:'takt',      owner:'takt' },
+  { key:'taktIssuance',        special:'takt',      owner:'takt' },
+  { key:'taktScrewing',        special:'takt',      owner:'takt' },
+  { key:'taktPackaging',       special:'takt',      owner:'takt' },
+  { key:'taktFinalInspection', special:'takt',      owner:'takt' },
+  // Computed totals (read-only)
+  { key:'totalAssyTakt',       special:'takt-total', owner:'takt-total' },
+  { key:'totalQcTakt',         special:'takt-total', owner:'takt-total' },
+];
+
+const ALL_FORM_KEYS = ['site','qty','cpo','apo','prs','assy','ident','pn','dn','rev',
+                       'crdd','ardd','etf','eta','dateAssy','dateQc','issuanceStatus','projectStatus',
+                       'shipmentInvoice','assyInvoice','awb','partsEta','etd',
+                       'alliancePrice','customerPrice','assyPrice',
+                       'numPins','numScrews',
+                       'assyClassification','pinOrientation',
+                       'taktPartsInspection','taktPinInsertion','taktPinInspection',
+                       'taktAssembly','taktIssuance','taktScrewing',
+                       'taktPackaging','taktFinalInspection'];
+
+// ─── STATE ────────────────────────────────────────────────────
+let currentUser  = null;
+let currentRole  = 'admin';
+let currentView  = 'table';
+let editingId    = null;
+let filesRowId   = null;
+let sortCol      = null;
+let sortDir      = 1;
+let selectedRows = new Set();
+
+// ─── SAMPLE DATA ──────────────────────────────────────────────
+let orders = [
+  { id:1,  site:'PHX-01', cpo:'CPO-100421', apo:'APO-88301', prs:'PRS-44201', qty:5,  assy:'Mechanical', ident:'Main Frame',      pn:'PN-MF-0042', dn:'DWG-MF-0042', rev:'C', issuanceStatus:'In Progress', projectStatus:'On Track', crdd:'2025-06-15', ardd:'2025-06-10', etf:'2025-06-08', eta:'2025-06-12', shipmentInvoice:'SI-001122', assyInvoice:'AI-001122', awb:'AWB-991122', partsEta:'2025-06-05', etd:'2025-06-14', assyClassification:'Jaguar', pinOrientation:'With Orientation', alliancePrice:1200, customerPrice:1800, assyPrice:200, numPins:48, numScrews:8, taktPartsInspection:12, taktPinInsertion:25, taktPinInspection:10, taktAssembly:30, taktIssuance:8, taktScrewing:15, taktPackaging:10, taktFinalInspection:20, files:[] },
+  { id:2,  site:'LAX-02', cpo:'CPO-100422', apo:'APO-88302', prs:'PRS-44202', qty:12, assy:'Electrical',  ident:'Control Panel',   pn:'PN-CP-0108', dn:'DWG-CP-0108', rev:'A', issuanceStatus:'Open',        projectStatus:'On Track', crdd:'2025-07-01', ardd:'2025-06-28', etf:'2025-06-25', eta:'2025-06-30', shipmentInvoice:'',         assyInvoice:'',         awb:'',           partsEta:'2025-06-20', etd:'2025-07-02', assyClassification:'Strip', pinOrientation:'Without Orientation', alliancePrice:450, customerPrice:620, assyPrice:80, numPins:0, numScrews:4, taktPartsInspection:8, taktPinInsertion:0, taktPinInspection:0, taktAssembly:20, taktIssuance:5, taktScrewing:8, taktPackaging:7, taktFinalInspection:15, files:[] },
+  { id:3,  site:'PHX-01', cpo:'CPO-100423', apo:'APO-88303', prs:'PRS-44203', qty:3,  assy:'Hydraulic',   ident:'Pump Assembly',   pn:'PN-PA-0033', dn:'DWG-PA-0033', rev:'B', issuanceStatus:'Delayed',     projectStatus:'At Risk',  crdd:'2025-05-20', ardd:'2025-05-18', etf:'2025-05-15', eta:'2025-05-25', shipmentInvoice:'SI-001133', assyInvoice:'AI-001133', awb:'AWB-991133', partsEta:'2025-05-12', etd:'2025-05-27', assyClassification:'OTQ', pinOrientation:'N/A', alliancePrice:3300, customerPrice:4800, assyPrice:550, numPins:0, numScrews:12, taktPartsInspection:15, taktPinInsertion:0, taktPinInspection:0, taktAssembly:45, taktIssuance:10, taktScrewing:22, taktPackaging:12, taktFinalInspection:25, files:[] },
+  { id:4,  site:'SEA-03', cpo:'CPO-100424', apo:'APO-88304', prs:'PRS-44204', qty:8,  assy:'Structural',  ident:'Support Bracket', pn:'PN-SB-0071', dn:'DWG-SB-0071', rev:'D', issuanceStatus:'Complete',    projectStatus:'Complete', crdd:'2025-04-30', ardd:'2025-04-28', etf:'2025-04-25', eta:'2025-04-29', shipmentInvoice:'SI-001144', assyInvoice:'AI-001144', awb:'AWB-991144', partsEta:'2025-04-22', etd:'2025-05-01', assyClassification:'QFN', pinOrientation:'With Orientation', alliancePrice:780, customerPrice:1050, assyPrice:130, numPins:32, numScrews:6, taktPartsInspection:10, taktPinInsertion:18, taktPinInspection:8, taktAssembly:25, taktIssuance:6, taktScrewing:12, taktPackaging:8, taktFinalInspection:18, files:[] },
+  { id:5,  site:'LAX-02', cpo:'CPO-100425', apo:'APO-88305', prs:'PRS-44205', qty:20, assy:'Electronic',  ident:'Sensor Array',    pn:'PN-SA-0199', dn:'DWG-SA-0199', rev:'A', issuanceStatus:'Pending',     projectStatus:'At Risk',  crdd:'2025-08-10', ardd:'2025-08-05', etf:'2025-08-01', eta:'2025-08-07', shipmentInvoice:'',         assyInvoice:'',         awb:'',           partsEta:'2025-07-28', etd:'2025-08-09', assyClassification:'BGAT', pinOrientation:'Without Orientation', alliancePrice:220, customerPrice:310, assyPrice:40, numPins:0, numScrews:3, taktPartsInspection:6, taktPinInsertion:0, taktPinInspection:0, taktAssembly:15, taktIssuance:4, taktScrewing:6, taktPackaging:5, taktFinalInspection:12, files:[] },
+  { id:6,  site:'DEN-04', cpo:'CPO-100426', apo:'APO-88306', prs:'PRS-44206', qty:1,  assy:'Mechanical',  ident:'Gear Housing',    pn:'PN-GH-0015', dn:'DWG-GH-0015', rev:'B', issuanceStatus:'In Progress', projectStatus:'On Track', crdd:'2025-06-30', ardd:'2025-06-25', etf:'2025-06-22', eta:'2025-06-27', shipmentInvoice:'SI-001155', assyInvoice:'AI-001155', awb:'AWB-991155', partsEta:'2025-06-18', etd:'2025-06-29', assyClassification:'WCSP', pinOrientation:'N/A', alliancePrice:5600, customerPrice:7200, assyPrice:900, numPins:0, numScrews:20, taktPartsInspection:20, taktPinInsertion:0, taktPinInspection:0, taktAssembly:60, taktIssuance:15, taktScrewing:35, taktPackaging:18, taktFinalInspection:30, files:[] },
+  { id:7,  site:'SEA-03', cpo:'CPO-100427', apo:'APO-88307', prs:'PRS-44207', qty:6,  assy:'Pneumatic',   ident:'Valve Block',     pn:'PN-VB-0088', dn:'DWG-VB-0088', rev:'C', issuanceStatus:'Open',        projectStatus:'On Track', crdd:'2025-07-15', ardd:'2025-07-12', etf:'2025-07-09', eta:'2025-07-13', shipmentInvoice:'',         assyInvoice:'',         awb:'',           partsEta:'2025-07-05', etd:'2025-07-15', assyClassification:'FP', pinOrientation:'With Orientation', alliancePrice:1100, customerPrice:1500, assyPrice:180, numPins:64, numScrews:10, taktPartsInspection:14, taktPinInsertion:35, taktPinInspection:14, taktAssembly:40, taktIssuance:9, taktScrewing:18, taktPackaging:11, taktFinalInspection:22, files:[] },
+  { id:8,  site:'PHX-01', cpo:'CPO-100428', apo:'APO-88308', prs:'PRS-44208', qty:4,  assy:'Electrical',  ident:'Wiring Harness',  pn:'PN-WH-0054', dn:'DWG-WH-0054', rev:'A', issuanceStatus:'Complete',    projectStatus:'Closed',   crdd:'2025-04-15', ardd:'2025-04-12', etf:'2025-04-10', eta:'2025-04-13', shipmentInvoice:'SI-001166', assyInvoice:'AI-001166', awb:'AWB-991166', partsEta:'2025-04-08', etd:'2025-04-15', assyClassification:'Strip', pinOrientation:'Without Orientation', alliancePrice:960, customerPrice:1300, assyPrice:160, numPins:0, numScrews:7, taktPartsInspection:9, taktPinInsertion:0, taktPinInspection:0, taktAssembly:28, taktIssuance:7, taktScrewing:13, taktPackaging:9, taktFinalInspection:16, files:[] },
+];
+let nextId = 9;
+
+// ─── LOGIN ────────────────────────────────────────────────────
+function initHints() {
+  const c = document.getElementById('hintUsers');
+  c.innerHTML = USERS.map(u => `
+    <div class="hint-user" onclick="fillLogin('${u.username}','${u.password}')">
+      <div class="hint-left">
+        <div class="hint-avatar" style="background:${u.avatarColor}">${u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <span class="hint-user-name">${u.username}<span style="color:var(--text3);"> / ${u.password}</span></span>
+      </div>
+      <span class="hint-role-badge ${u.role}">${ROLES[u.role].label}</span>
+    </div>`).join('');
+}
+
+function fillLogin(user, pass) {
+  document.getElementById('loginUser').value = user;
+  document.getElementById('loginPass').value = pass;
+  document.getElementById('loginError').classList.remove('visible');
+}
+
+function attemptLogin() {
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const found = USERS.find(x => x.username.toLowerCase() === u && x.password === p);
+  if (!found) {
+    document.getElementById('loginError').classList.add('visible');
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+    return;
+  }
+  currentUser = found;
+  // Auto-set role from the user's account
+  setRole(found.role);
+  // Update user chip in topbar
+  const initials = found.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const av = document.getElementById('userAvatar');
+  av.textContent = initials;
+  av.style.background = found.avatarColor;
+  document.getElementById('userNameDisplay').textContent = found.displayName;
+  document.getElementById('userChip').style.display = 'flex';
+  document.getElementById('logoutBtn').style.display = '';
+  // Lock the role switcher if not admin/planner
+  updateRoleSwitcherLock(found.role);
+  // Dismiss overlay
+  document.getElementById('loginOverlay').classList.add('hidden');
+  toast(`Welcome, ${found.displayName.split(' ')[0]}! Signed in as ${ROLES[found.role].label}.`, 'info');
+}
+
+function updateRoleSwitcherLock(role) {
+  // Admin and planner can still switch roles freely; other roles are locked to their own
+  const canSwitch = (role === 'admin' || role === 'planner');
+  document.querySelectorAll('.role-btn').forEach(btn => {
+    btn.disabled = !canSwitch;
+    btn.style.opacity = canSwitch ? '' : (btn.dataset.role === role ? '1' : '0.35');
+    btn.style.cursor = canSwitch ? '' : (btn.dataset.role === role ? 'default' : 'not-allowed');
+    btn.title = canSwitch ? '' : (btn.dataset.role === role ? '' : 'Your account is locked to your assigned role');
+  });
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').classList.remove('visible');
+  document.getElementById('userChip').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
+  // Re-enable role switcher
+  document.querySelectorAll('.role-btn').forEach(btn => {
+    btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = ''; btn.title = '';
+  });
+  selectedRows.clear();
+  toast('Signed out', 'info');
+}
+
+// ─── UTILITIES ────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const w=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`; t.textContent=msg; w.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),300);}, 2800);
+}
+function formatDate(d){if(!d)return '—';const[y,m,day]=d.split('-');return `${m}/${day}/${y}`;}
+function dateClass(d){if(!d)return '';const diff=(new Date(d)-new Date())/86400000;if(diff<0)return 'date-overdue';if(diff<7)return 'date-soon';return 'date-ok';}
+function issuanceBadge(s){const map={'Open':['open','Open'],'In Progress':['in-prog','In Prog'],'Complete':['complete','Complete'],'Delayed':['delayed','Delayed'],'Pending':['pending','Pending']};const[cls,lbl]=map[s]||['open',s];return `<span class="badge ${cls}"><span class="badge-dot"></span>${lbl}</span>`;}
+function projectBadge(s){const map={'On Track':['on-track','On Track'],'At Risk':['at-risk','At Risk'],'Delayed':['delayed','Delayed'],'Complete':['complete','Complete'],'Closed':['closed','Closed'],'Delivered':['delivered','Delivered'],'Cancelled':['cancelled','Cancelled'],'Forwarded to Stock':['to-stock','To Stock']};const[cls,lbl]=map[s]||['pending',s];return `<span class="badge ${cls}"><span class="badge-dot"></span>${lbl}</span>`;}
+function formatUSD(v) {
+  if (v === '' || v === null || v === undefined || isNaN(+v)) return '—';
+  return new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', minimumFractionDigits:2}).format(+v);
+}
+
+function updateModalTotals() {
+  const qty = parseFloat(document.getElementById('f-qty').value) || 0;
+  const ap  = parseFloat(document.getElementById('f-alliancePrice').value) || 0;
+  const cp  = parseFloat(document.getElementById('f-customerPrice').value) || 0;
+  document.getElementById('f-totalAlliancePrice').value = qty && ap ? formatUSD(ap * qty) : '';
+  document.getElementById('f-totalCustomerPrice').value = qty && cp ? formatUSD(cp * qty) : '';
+  updateModalTaktTotals();
+}
+
+// Returns true if pinOrientation indicates a pin-type assembly
+function isPinType(pinOrientation) {
+  return pinOrientation && pinOrientation !== 'Without Orientation' && pinOrientation !== 'N/A' && pinOrientation !== '';
+}
+
+// Compute takt totals for an order object (or form values)
+function calcTaktTotals(o) {
+  const pin = isPinType(o.pinOrientation);
+  const tpi   = parseFloat(o.taktPinInsertion)    || 0;
+  const tpchk = pin ? (parseFloat(o.taktPinInspection)  || 0) : 0;
+  const tassy = parseFloat(o.taktAssembly)         || 0;
+  const tiss  = parseFloat(o.taktIssuance)         || 0;
+  const tscr  = parseFloat(o.taktScrewing)         || 0;
+  const tpkg  = parseFloat(o.taktPackaging)        || 0;
+  const tparts= parseFloat(o.taktPartsInspection)  || 0;
+  const tfi   = parseFloat(o.taktFinalInspection)  || 0;
+  const totalAssy = tpi + tpchk + tassy + tiss + tscr + tpkg;
+  const totalQc   = tparts + tfi;
+  return { totalAssy, totalQc };
+}
+
+function updateModalTaktTotals() {
+  const getV = id => document.getElementById(id) ? document.getElementById(id).value : '';
+  const o = {
+    pinOrientation:      getV('f-pinOrientation'),
+    taktPartsInspection: getV('f-taktPartsInspection'),
+    taktPinInsertion:    getV('f-taktPinInsertion'),
+    taktPinInspection:   getV('f-taktPinInspection'),
+    taktAssembly:        getV('f-taktAssembly'),
+    taktIssuance:        getV('f-taktIssuance'),
+    taktScrewing:        getV('f-taktScrewing'),
+    taktPackaging:       getV('f-taktPackaging'),
+    taktFinalInspection: getV('f-taktFinalInspection'),
+  };
+  const { totalAssy, totalQc } = calcTaktTotals(o);
+  const taEl = document.getElementById('f-totalAssyTakt');
+  const tqEl = document.getElementById('f-totalQcTakt');
+  // Toggle Pin Inspection field availability based on pin type
+  const pinInspEl = document.getElementById('f-taktPinInspection');
+  if (pinInspEl) {
+    const pin = isPinType(o.pinOrientation);
+    pinInspEl.disabled = !pin || (ROLES[currentRole].editableCols !== 'all' && !ROLES[currentRole].editableCols.includes('taktPinInspection'));
+    pinInspEl.style.opacity = pin ? '' : '0.3';
+    pinInspEl.title = pin ? '' : 'Only available for pin-type assemblies';
+    if (!pin) pinInspEl.value = '';
+  }
+  if (taEl) taEl.value = totalAssy > 0 ? totalAssy + ' sec' : '';
+  if (tqEl) tqEl.value = totalQc  > 0 ? totalQc  + ' sec' : '';
+}
+
+function formatTakt(v) {
+  if (v === '' || v === null || v === undefined || isNaN(+v)) return '—';
+  return (+v).toFixed(0) + ' sec';
+}
+
+function fileIcon(n){const ext=n.split('.').pop().toLowerCase();return{pdf:'📄',png:'🖼',jpg:'🖼',jpeg:'🖼',xlsx:'📊',xls:'📊',docx:'📝',doc:'📝',dwg:'📐',zip:'📦'}[ext]||'📎';}
+function humanSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+
+// ─── PERMISSIONS ──────────────────────────────────────────────
+function isEditable(colKey){const r=ROLES[currentRole];if(r.editableCols==='all')return true;return r.editableCols.includes(colKey);}
+
+// ─── SHIPPED ITEMS (localStorage) ─────────────────────────────
+const SHIPPED_KEY = 'allianceShippedItems';
+
+function loadShipped() {
+  try { return JSON.parse(localStorage.getItem(SHIPPED_KEY)) || []; } catch(e) { return []; }
+}
+
+function saveShipped(arr) {
+  localStorage.setItem(SHIPPED_KEY, JSON.stringify(arr));
+}
+
+function moveToShipped(order) {
+  const shipped = loadShipped();
+  // Avoid duplicates
+  if (shipped.find(s => s.id === order.id)) return;
+  const record = Object.assign({}, order, {
+    shippedAt: new Date().toISOString(),
+    shippedBy: currentUser ? currentUser.displayName : 'Unknown',
+  });
+  shipped.push(record);
+  saveShipped(shipped);
+  updateShippedTabBadge();
+updateArchiveTabBadge();
+  renderShippedTable();
+}
+
+function updateShippedTabBadge() {
+  const shipped = loadShipped();
+  const badge = document.getElementById('shippedTabCount');
+  if (!badge) return;
+  if (shipped.length > 0) {
+    badge.textContent = shipped.length;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderShippedTable() {
+  const shipped = loadShipped();
+  const tbody = document.getElementById('shippedBody');
+  const empty = document.getElementById('shippedEmpty');
+  if (!tbody) return;
+
+  document.getElementById('shipped-count').textContent = shipped.length;
+
+  const totalVal = shipped.reduce((sum, o) => {
+    const t = (parseFloat(o.customerPrice) || 0) * (parseFloat(o.qty) || 0);
+    return sum + t;
+  }, 0);
+  document.getElementById('shipped-value').textContent = totalVal > 0
+    ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(totalVal) : '—';
+
+  if (!shipped.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const tdStyle = 'padding:0 10px;border-right:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:42px;border-bottom:1px solid var(--border);';
+  const greenTd = tdStyle + 'color:#16a34a;font-weight:600;';
+
+  tbody.innerHTML = shipped.map((o, i) => {
+    const total = (parseFloat(o.customerPrice)||0) * (parseFloat(o.qty)||0);
+    const dateShipped = o.shippedAt ? new Date(o.shippedAt).toLocaleDateString() : '—';
+    return `<tr style="background:${i%2===0?'#f0fdf4':'#fff'};">
+      <td style="${tdStyle}">${o.site||'—'}</td>
+      <td style="${tdStyle}font-weight:600;color:var(--text);">${o.cpo||'—'}</td>
+      <td style="${tdStyle}">${o.apo||'—'}</td>
+      <td style="${tdStyle}">${o.prs||'—'}</td>
+      <td style="${tdStyle}text-align:center;">${o.qty||'—'}</td>
+      <td style="${tdStyle}">${o.pn||'—'}</td>
+      <td style="${tdStyle}">${o.ident||'—'}</td>
+      <td style="${tdStyle}color:#b45309;font-weight:600;">${o.etd ? formatDate(o.etd) : '—'}</td>
+      <td style="${tdStyle}">${o.awb||'—'}</td>
+      <td style="${tdStyle}">${o.shipmentInvoice||'—'}</td>
+      <td style="${greenTd}">${o.customerPrice ? formatUSD(o.customerPrice) : '—'}</td>
+      <td style="${greenTd}">${total > 0 ? formatUSD(total) : '—'}</td>
+      <td style="${tdStyle}">${o.assyInvoice||'—'}</td>
+      <td style="${greenTd}">${dateShipped} <span style="color:var(--text3);font-size:9px;">(${o.shippedBy||''})</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── ARCHIVE (Cancelled + Forwarded to Stock) ─────────────────
+const ARCHIVE_KEY  = 'allianceArchiveItems';
+let   archiveFilter = 'all'; // 'all' | 'cancelled' | 'stock'
+
+function loadArchive()  { try { return JSON.parse(localStorage.getItem(ARCHIVE_KEY))||[]; } catch(e){ return []; } }
+function saveArchive(a) { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(a)); }
+
+function moveToArchive(order, status) {
+  const archive = loadArchive();
+  if (archive.find(a => a.id === order.id && a.archiveStatus === status)) return;
+  archive.push(Object.assign({}, order, {
+    archiveStatus: status,
+    archivedAt:    new Date().toISOString(),
+    archivedBy:    currentUser ? currentUser.displayName : 'Unknown',
+  }));
+  saveArchive(archive);
+  updateArchiveTabBadge();
+  renderArchiveTable();
+}
+
+function updateArchiveTabBadge() {
+  const a = loadArchive();
+  const badge = document.getElementById('archiveTabCount');
+  if (!badge) return;
+  if (a.length > 0) { badge.textContent = a.length; badge.style.display = ''; }
+  else badge.style.display = 'none';
+  const cc = a.filter(x=>x.archiveStatus==='Cancelled').length;
+  const sc = a.filter(x=>x.archiveStatus==='Forwarded to Stock').length;
+  const cEl = document.getElementById('archive-cancelled-count');
+  const sEl = document.getElementById('archive-stock-count');
+  if (cEl) cEl.textContent = cc;
+  if (sEl) sEl.textContent = sc;
+}
+
+function setArchiveFilter(f) {
+  archiveFilter = f;
+  ['all','cancelled','stock'].forEach(t => {
+    const btn = document.getElementById('arc-tab-'+t);
+    if (!btn) return;
+    btn.style.borderBottom = (t===f) ? '2px solid #7c3aed' : '2px solid transparent';
+    btn.style.color = (t===f) ? '#7c3aed' : 'var(--text3)';
+  });
+  renderArchiveTable();
+}
+
+function renderArchiveTable() {
+  let items = loadArchive();
+  if (archiveFilter === 'cancelled') items = items.filter(x=>x.archiveStatus==='Cancelled');
+  if (archiveFilter === 'stock')     items = items.filter(x=>x.archiveStatus==='Forwarded to Stock');
+  const tbody = document.getElementById('archiveBody');
+  const empty = document.getElementById('archiveEmpty');
+  if (!tbody) return;
+  updateArchiveTabBadge();
+  if (!items.length) { tbody.innerHTML=''; empty.style.display='flex'; return; }
+  empty.style.display = 'none';
+  const tdBase = 'padding:0 10px;border-right:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:42px;border-bottom:1px solid var(--border);';
+  tbody.innerHTML = items.map((o,i) => {
+    const isCancelled = o.archiveStatus === 'Cancelled';
+    const statusHtml  = isCancelled
+      ? '<span class="badge cancelled"><span class="badge-dot"></span>Cancelled</span>'
+      : '<span class="badge to-stock"><span class="badge-dot"></span>To Stock</span>';
+    const rowBg = i%2===0 ? (isCancelled?'#fef2f2':'#f5f3ff') : '#fff';
+    return `<tr style="background:${rowBg};">
+      <td style="${tdBase}">${statusHtml}</td>
+      <td style="${tdBase}">${o.site||'—'}</td>
+      <td style="${tdBase}font-weight:600;color:var(--text);">${o.cpo||'—'}</td>
+      <td style="${tdBase}">${o.apo||'—'}</td>
+      <td style="${tdBase}">${o.prs||'—'}</td>
+      <td style="${tdBase}text-align:center;">${o.qty||'—'}</td>
+      <td style="${tdBase}">${o.pn||'—'}</td>
+      <td style="${tdBase}">${o.ident||'—'}</td>
+      <td style="${tdBase}color:#047857;font-weight:600;">${o.customerPrice ? formatUSD(o.customerPrice) : '—'}</td>
+      <td style="${tdBase}">${o.assyClassification||'—'}</td>
+      <td style="${tdBase}">${o.archivedBy||'—'}</td>
+      <td style="${tdBase}color:var(--text3);">${o.archivedAt ? new Date(o.archivedAt).toLocaleDateString() : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function exportArchiveCSV() {
+  const items = loadArchive();
+  if (!items.length) { toast('No archived items to export','warn'); return; }
+  const h = ['Archive Status','Site','Customer PO#','Alliance PO#','PRS#','QTY','Part Number','Identification','Customer Price','Assy Classification','Archived By','Date Archived'];
+  const rows = items.map(o => [o.archiveStatus,o.site,o.cpo,o.apo,o.prs,o.qty,o.pn,o.ident,o.customerPrice||'',o.assyClassification||'',o.archivedBy||'',o.archivedAt?new Date(o.archivedAt).toLocaleDateString():'']);
+  const csv = [h,...rows].map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `archived-items-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('Archive CSV exported');
+}
+
+function confirmClearArchive() {
+  if (!confirm('Clear all archived items? This cannot be undone.')) return;
+  localStorage.removeItem(ARCHIVE_KEY);
+  updateArchiveTabBadge();
+  renderArchiveTable();
+  toast('Archive cleared','info');
+}
+
+// ─── DELAY NOTICES (localStorage) ─────────────────────────────
+const DELAY_KEY = 'allianceDelayNotices';
+let   pendingDelayOrder = null;
+
+function loadDelayNotices()  { try { return JSON.parse(localStorage.getItem(DELAY_KEY))||[]; } catch(e){ return []; } }
+function saveDelayNotices(a) { localStorage.setItem(DELAY_KEY, JSON.stringify(a)); }
+
+function openDelayModal(order) {
+  pendingDelayOrder = order;
+  const row = document.getElementById('delayInfoRow');
+  row.innerHTML = [
+    `<span class="delay-info-chip warn">🚨 DELAYED</span>`,
+    `<span class="delay-info-chip">${order.cpo}</span>`,
+    `<span class="delay-info-chip">${order.site}</span>`,
+    `<span class="delay-info-chip">${order.ident||order.pn||'—'}</span>`,
+    `<span class="delay-info-chip">QTY: ${order.qty}</span>`,
+  ].join('');
+  const eta = order.eta ? formatDate(order.eta) : '—';
+  const etd = order.etd ? formatDate(order.etd) : '—';
+  document.getElementById('delayNoticeText').value =
+`Dear Sales Team,
+
+We would like to inform you that the following order has been marked as DELAYED:
+
+  Customer PO#:    ${order.cpo}
+  Alliance PO#:    ${order.apo||'—'}
+  Site:            ${order.site}
+  Part Number:     ${order.pn||'—'}
+  Identification:  ${order.ident||'—'}
+  QTY:             ${order.qty}
+  Customer RDD:    ${formatDate(order.crdd)}
+  ETA:             ${eta}
+  ETD:             ${etd}
+
+Please coordinate with the customer and update them accordingly.
+
+Reported by: ${currentUser ? currentUser.displayName : 'System'}
+Date: ${new Date().toLocaleDateString()}
+
+Regards,
+Order Management Team`;
+  document.getElementById('delayModal').classList.add('open');
+}
+
+function closeDelayModal() {
+  document.getElementById('delayModal').classList.remove('open');
+  pendingDelayOrder = null;
+}
+
+function confirmDelayNotice() {
+  if (!pendingDelayOrder) return;
+  const notices = loadDelayNotices();
+  notices.push({
+    id:        pendingDelayOrder.id,
+    cpo:       pendingDelayOrder.cpo,
+    apo:       pendingDelayOrder.apo,
+    site:      pendingDelayOrder.site,
+    pn:        pendingDelayOrder.pn,
+    ident:     pendingDelayOrder.ident,
+    qty:       pendingDelayOrder.qty,
+    message:   document.getElementById('delayNoticeText').value,
+    sentAt:    new Date().toISOString(),
+    sentBy:    currentUser ? currentUser.displayName : 'Unknown',
+    read:      false,
+  });
+  saveDelayNotices(notices);
+  closeDelayModal();
+  toast('📧 Delay notice sent to Sales team!','info');
+  // If sales is logged in, show them immediately
+  if (currentRole === 'sales') renderSalesDelayPanel();
+}
+
+function renderSalesDelayPanel() {
+  const panel = document.getElementById('salesDelayPanel');
+  if (!panel) return;
+  const notices = loadDelayNotices();
+  const badge   = document.getElementById('salesDelayBadge');
+  const unread  = notices.filter(n=>!n.read).length;
+  if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? '' : 'none'; }
+  if (!notices.length) {
+    panel.innerHTML = '<div class="shipped-empty"><svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" style="opacity:0.25;color:var(--amber)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>No delay notices yet.</div>';
+    return;
+  }
+  const tdBase = 'padding:0 10px;border-right:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:42px;border-bottom:1px solid var(--border);';
+  panel.innerHTML = `<div style="overflow:auto;flex:1;">
+    <table style="border-collapse:collapse;min-width:100%;table-layout:fixed;">
+      <colgroup><col style="width:130px;"/><col style="width:90px;"/><col style="width:130px;"/><col style="width:130px;"/><col style="width:60px;"/><col style="width:130px;"/><col style="width:350px;"/><col style="width:130px;"/><col style="width:150px;"/></colgroup>
+      <thead><tr>
+        ${['Customer PO#','Site','Alliance PO#','Part Number','QTY','Identification','Notice Message','Sent By','Date Sent'].map(h=>`<th style="height:36px;background:var(--surface);border-right:1px solid var(--border);border-bottom:2px solid #fde68a;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#92400e;text-align:left;padding:0 10px;white-space:nowrap;position:sticky;top:0;z-index:20;">${h}</th>`).join('')}
+      </tr></thead>
+      <tbody>${notices.slice().reverse().map((n,i)=>{
+        n.read = true;
+        return `<tr style="background:${i%2===0?'#fffbeb':'#fff'};">
+          <td style="${tdBase}font-weight:600;color:var(--text);">${n.cpo||'—'}</td>
+          <td style="${tdBase}">${n.site||'—'}</td>
+          <td style="${tdBase}">${n.apo||'—'}</td>
+          <td style="${tdBase}">${n.pn||'—'}</td>
+          <td style="${tdBase}text-align:center;">${n.qty||'—'}</td>
+          <td style="${tdBase}">${n.ident||'—'}</td>
+          <td style="padding:6px 10px;border-right:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--text2);white-space:pre-wrap;height:auto;border-bottom:1px solid var(--border);min-width:350px;">${n.message||'—'}</td>
+          <td style="${tdBase}color:var(--amber);">${n.sentBy||'—'}</td>
+          <td style="${tdBase}color:var(--text3);">${n.sentAt?new Date(n.sentAt).toLocaleDateString():'—'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+  // Mark all as read
+  saveDelayNotices(notices);
+  if (badge) badge.style.display = 'none';
+}
+
+function exportDelayCSV() {
+  const notices = loadDelayNotices();
+  if (!notices.length) { toast('No delay notices to export','warn'); return; }
+  const h = ['Customer PO#','Alliance PO#','Site','Part Number','QTY','Identification','Message','Sent By','Date Sent'];
+  const rows = notices.map(n=>[n.cpo,n.apo,n.site,n.pn,n.qty,n.ident,n.message,n.sentBy,n.sentAt?new Date(n.sentAt).toLocaleDateString():'']);
+  const csv = [h,...rows].map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `delay-notices-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('Delay notices CSV exported');
+}
+
+function exportShippedCSV() {
+  const shipped = loadShipped();
+  if (!shipped.length) { toast('No shipped items to export', 'warn'); return; }
+  const h = ['Site','Customer PO#','Alliance PO#','PRS#','QTY','Part Number','Identification','ETD','AWB','Shipment Invoice','Assy Invoice','Customer Price','Total Value','Date Shipped','Shipped By'];
+  const rows = shipped.map(o => {
+    const total = (parseFloat(o.customerPrice)||0) * (parseFloat(o.qty)||0);
+    return [o.site,o.cpo,o.apo,o.prs,o.qty,o.pn,o.ident,o.etd,o.awb,o.shipmentInvoice,o.assyInvoice,o.customerPrice,total||'',o.shippedAt?new Date(o.shippedAt).toLocaleDateString():'',o.shippedBy||''];
+  });
+  const csv = [h,...rows].map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `shipped-items-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('Shipped items CSV exported');
+}
+
+function confirmClearShipped() {
+  if (!confirm('Clear all shipped items? This cannot be undone.')) return;
+  localStorage.removeItem(SHIPPED_KEY);
+  updateShippedTabBadge();
+updateArchiveTabBadge();
+  renderShippedTable();
+  toast('Shipped items cleared', 'info');
+}
+
+// ─── ROLE ─────────────────────────────────────────────────────
+function setRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+  const roleBtn = document.querySelector(`.role-btn[data-role="${role}"]`);
+  if (roleBtn) roleBtn.classList.add('active');
+  const cfg = ROLES[role];
+  const ind = document.getElementById('roleIndicator');
+  ind.textContent = cfg.label;
+  ind.className = `role-indicator ri-${role}`;
+  document.getElementById('sb-role').textContent = cfg.label;
+  document.getElementById('addRowBtn').style.display = cfg.canAdd ? '' : 'none';
+  document.getElementById('fabBtn').style.display = cfg.canAdd ? '' : 'none';
+  // Show/hide sales-specific delay tab
+  const salesDelayTabEl = document.getElementById('tab-sales-delay');
+  if (salesDelayTabEl) salesDelayTabEl.style.display = (role === 'sales') ? '' : 'none';
+  // If sales role, auto switch to their delay tab
+  if (role === 'sales') switchTab('sales-delay');
+  else if (currentView !== 'table' && currentView !== 'cards') switchTab('orders');
+  renderTable();
+}
+
+// ─── VIEW ─────────────────────────────────────────────────────
+function setView(v){
+  currentView=v;
+  document.getElementById('vBtn-table').classList.toggle('active',v==='table');
+  document.getElementById('vBtn-cards').classList.toggle('active',v==='cards');
+  document.getElementById('tableView').classList.toggle('hidden',v!=='table');
+  document.getElementById('cardsView').classList.toggle('visible',v==='cards');
+  renderTable();
+}
+function checkBreakpoint(){if(window.innerWidth<600&&currentView==='table')setView('cards');}
+window.addEventListener('resize',checkBreakpoint);
+
+// ─── FILTER / SORT ────────────────────────────────────────────
+function getFilteredOrders(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const site=document.getElementById('siteFilter').value;
+  const status=document.getElementById('statusFilter').value;
+  let rows=orders.filter(o=>{
+    if(site&&o.site!==site)return false;
+    if(status&&o.issuanceStatus!==status)return false;
+    if(q&&!Object.values(o).join(' ').toLowerCase().includes(q))return false;
+    return true;
+  });
+  if(sortCol){rows.sort((a,b)=>{let av=a[sortCol]||'',bv=b[sortCol]||'';if(sortCol==='qty'){av=+av;bv=+bv;}return av<bv?-sortDir:av>bv?sortDir:0;});}
+  return rows;
+}
+function filterRows(){renderTable();}
+function sortBy(col){
+  sortDir=sortCol===col?-sortDir:1; sortCol=col;
+  document.querySelectorAll('.sort-icon').forEach(s=>s.textContent='↕');
+  const el=document.getElementById(`sort-${col}`);if(el)el.textContent=sortDir===1?'↑':'↓';
+  renderTable();
+}
+
+// ─── RENDER ───────────────────────────────────────────────────
+function renderTable(){const rows=getFilteredOrders();if(currentView==='table')renderTableView(rows);else renderCardsView(rows);updateStats(rows);}
+
+function makeSelectCell(id,col,val,options,badgeFn){
+  const editable=isEditable(col);
+  if(editable){return `<div style="display:flex;align-items:center;gap:6px;position:relative;">${badgeFn(val)}<select onchange="inlineEdit(${id},'${col}',this.value)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;font-size:16px;">${options.map(s=>`<option ${s===val?'selected':''}>${s}</option>`).join('')}</select></div>`;}
+  return badgeFn(val);
+}
+
+function renderTableView(rows){
+  const tbody=document.getElementById('tableBody');
+  tbody.innerHTML='';
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="22"><div class="empty-state"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>No orders match your filters</div></td></tr>`;return;}
+  rows.forEach(o=>{
+    const tr=document.createElement('tr');
+    if(selectedRows.has(o.id))tr.classList.add('selected');
+    tr.dataset.id=o.id;
+    tr.innerHTML=`<td><input type="checkbox" class="cb" ${selectedRows.has(o.id)?'checked':''} onchange="toggleRow(${o.id},this)"/></td>`;
+    COLS.forEach(col=>{
+      const td=document.createElement('td');
+      const editable=isEditable(col.key);
+      if(editable)td.classList.add('editable');else td.classList.add('locked');
+      if(col.key==='site')td.classList.add('frozen');
+      if(col.owner)td.classList.add(`o-${col.owner}`);
+      if(col.special==='issuance'){td.innerHTML=makeSelectCell(o.id,col.key,o[col.key],['Open','In Progress','Pending','Complete','Delayed'],issuanceBadge);}
+      else if(col.special==='project'){td.innerHTML=makeSelectCell(o.id,col.key,o[col.key],['On Track','At Risk','Delayed','Complete','Closed','Delivered','Cancelled','Forwarded to Stock'],projectBadge);}
+      else if(col.special==='dropdown'){
+        const opts = col.key==='assyClassification' ? ASSY_CLASS_OPTS : PIN_ORI_OPTS;
+        if(editable){
+          td.innerHTML = `<div style="position:relative;display:flex;align-items:center;gap:4px;">`+
+            `<span style="font-size:10px;color:var(--text2)">${o[col.key]||'—'}</span>`+
+            `<select onchange="inlineEdit(${o.id},'${col.key}',this.value)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;font-size:16px;">`+
+            `<option value="">— Select —</option>`+
+            opts.map(s=>`<option ${s===o[col.key]?'selected':''}>${s}</option>`).join('')+
+            `</select></div>`;
+        } else {
+          td.textContent = o[col.key]||'—';
+        }
+      }
+      else if(col.special==='price'){
+        const val = o[col.key]; td.classList.add('price-cell');
+        if(!editable){td.classList.add('locked'); td.textContent = formatUSD(val);}
+        else{td.textContent = formatUSD(val); td.ondblclick=()=>startPriceEdit(td,o.id,col.key,val,o.qty);}
+      }
+      else if(col.special==='price-ro'){
+        td.classList.add('price-cell','locked');
+        const baseKey = col.key==='totalAlliancePrice'?'alliancePrice':'customerPrice';
+        const total = (parseFloat(o[baseKey])||0) * (parseFloat(o.qty)||0);
+        td.textContent = (o[baseKey] && o.qty) ? formatUSD(total) : '—';
+      }
+      else if(col.special==='takt'){
+        td.classList.add('takt-num','o-takt');
+        if(editable){ td.textContent=formatTakt(o[col.key]); td.ondblclick=()=>startTaktEdit(td,o.id,col.key,o[col.key]); td.classList.add('editable'); }
+        else{ td.textContent=formatTakt(o[col.key]); td.classList.add('locked'); }
+      }
+      else if(col.special==='takt-pin'){
+        td.classList.add('takt-num','o-takt');
+        const pin = isPinType(o.pinOrientation);
+        if(!pin){ td.classList.add('takt-disabled'); td.textContent='N/A'; }
+        else if(editable){ td.textContent=formatTakt(o[col.key]); td.ondblclick=()=>startTaktEdit(td,o.id,col.key,o[col.key]); td.classList.add('editable'); }
+        else{ td.textContent=formatTakt(o[col.key]); td.classList.add('locked'); }
+      }
+      else if(col.special==='takt-total'){
+        td.classList.add('takt-num','o-takt-total','locked');
+        const { totalAssy, totalQc } = calcTaktTotals(o);
+        td.textContent = (col.key==='totalAssyTakt') ? (totalAssy>0?totalAssy+' sec':'—') : (totalQc>0?totalQc+' sec':'—');
+      }
+      else if(col.special==='date'){const dc=dateClass(o[col.key]);td.innerHTML=`<span class="${dc}">${formatDate(o[col.key])}</span>`;if(editable)td.ondblclick=()=>startDateEdit(td,o.id,col.key,o[col.key]);}
+      else{td.textContent=o[col.key]||'—';if(editable)td.ondblclick=()=>startInlineEdit(td,o.id,col.key,o[col.key]);}
+      tr.appendChild(td);
+    });
+    const ftd=document.createElement('td');
+    ftd.innerHTML=`<div class="attach-cell">${o.files.length?`<span class="attach-count" onclick="openFilesModal(${o.id})">${o.files.length} file${o.files.length>1?'s':''}</span>`:''}<button class="attach-btn" onclick="openFilesModal(${o.id})"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>Attach</button></div>`;
+    tr.appendChild(ftd);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderCardsView(rows){
+  const c=document.getElementById('cardsView');c.innerHTML='';
+  if(!rows.length){c.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>No orders match your filters</div>`;return;}
+  rows.forEach(o=>{
+    const card=document.createElement('div');
+    card.className='order-card'+(selectedRows.has(o.id)?' selected':'');
+    card.dataset.id=o.id;
+    const ei=isEditable('issuanceStatus'),ep=isEditable('projectStatus'),el=isEditable('shipmentInvoice');
+    // Pre-compute takt totals so we avoid nested template literals
+    const {totalAssy, totalQc} = calcTaktTotals(o);
+    const taktAssyStr  = totalAssy > 0 ? totalAssy + ' sec' : '—';
+    const taktQcStr    = totalQc  > 0 ? totalQc  + ' sec' : '—';
+    const taktTotalHtml = '<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:120px;background:#fdf2f8;border:1px solid rgba(190,24,93,0.2);border-radius:6px;padding:6px 10px;">'
+      + '<div style="font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#be185d;">Total Assy Takt</div>'
+      + '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:#be185d;font-variant-numeric:tabular-nums;">' + taktAssyStr + '</div>'
+      + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:120px;background:#fdf2f8;border:1px solid rgba(190,24,93,0.2);border-radius:6px;padding:6px 10px;">'
+      + '<div style="font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#be185d;">Total QC Takt</div>'
+      + '<div style="font-family:var(--mono);font-size:13px;font-weight:700;color:#be185d;font-variant-numeric:tabular-nums;">' + taktQcStr + '</div>'
+      + '</div>';
+    card.innerHTML=`
+      <div class="card-header">
+        <div><div class="card-po">${o.cpo}</div><div class="card-ident" style="margin-top:3px">${o.ident||'—'}</div></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span class="card-site">${o.site}</span><input type="checkbox" class="cb" ${selectedRows.has(o.id)?'checked':''} onchange="toggleRow(${o.id},this)"/></div>
+      </div>
+      <div class="card-grid">
+        <div class="card-field"><div class="card-label">Alliance PO#</div><div class="card-value">${o.apo||'—'}</div></div>
+        <div class="card-field"><div class="card-label">PRS#</div><div class="card-value">${o.prs||'—'}</div></div>
+        <div class="card-field"><div class="card-label">Part Number</div><div class="card-value">${o.pn||'—'}</div></div>
+        <div class="card-field"><div class="card-label">QTY / Rev</div><div class="card-value">${o.qty} · Rev ${o.rev||'—'}</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        ${ei?`<div class="card-status-wrap">${issuanceBadge(o.issuanceStatus)}<select onchange="inlineEdit(${o.id},'issuanceStatus',this.value)">${['Open','In Progress','Pending','Complete','Delayed'].map(s=>`<option ${s===o.issuanceStatus?'selected':''}>${s}</option>`).join('')}</select></div>`:issuanceBadge(o.issuanceStatus)}
+        ${ep?`<div class="card-status-wrap">${projectBadge(o.projectStatus)}<select onchange="inlineEdit(${o.id},'projectStatus',this.value)">${['On Track','At Risk','Delayed','Complete','Closed','Delivered','Cancelled','Forwarded to Stock'].map(s=>`<option ${s===o.projectStatus?'selected':''}>${s}</option>`).join('')}</select></div>`:projectBadge(o.projectStatus)}
+        ${o.files.length?`<span class="attach-count" onclick="openFilesModal(${o.id})">${o.files.length} file${o.files.length>1?'s':''}</span>`:''}
+      </div>
+      <div class="card-sep" style="color:#22d3ee;">Pricing</div>
+      <div class="card-grid">
+        <div class="card-field">
+          <div class="card-label">Alliance Price</div>
+          <div class="card-value" style="color:var(--green)">${formatUSD(o.alliancePrice)}</div>
+        </div>
+        <div class="card-field">
+          <div class="card-label">Total Alliance</div>
+          <div class="card-value" style="color:var(--green)">${o.alliancePrice&&o.qty ? formatUSD((parseFloat(o.alliancePrice)||0)*(parseFloat(o.qty)||0)) : '—'}</div>
+        </div>
+        <div class="card-field">
+          <div class="card-label">Customer Price</div>
+          <div class="card-value" style="color:var(--green)">${formatUSD(o.customerPrice)}</div>
+        </div>
+        <div class="card-field">
+          <div class="card-label">Total Customer</div>
+          <div class="card-value" style="color:var(--green)">${o.customerPrice&&o.qty ? formatUSD((parseFloat(o.customerPrice)||0)*(parseFloat(o.qty)||0)) : '—'}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;">
+        ${o.assyClassification ? `<span style="font-family:var(--mono);font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;border:1px solid rgba(124,58,237,0.3);background:rgba(124,58,237,0.07);color:#7c3aed;">${o.assyClassification}</span>` : ''}
+        ${o.pinOrientation ? `<span style="font-family:var(--mono);font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;border:1px solid rgba(8,145,178,0.3);background:rgba(8,145,178,0.07);color:#0891b2;">${o.pinOrientation}</span>` : ''}
+      </div>
+      <div class="card-sep logistics">Logistics</div>
+      <div class="card-grid">
+        <div class="card-field"><div class="card-label">Shipment Invoice</div><div class="card-value ${el?'can-edit':''}" ${el?'ondblclick="cardInlineEdit('+o.id+',\'shipmentInvoice\',this)"':''}>${o.shipmentInvoice||'—'}</div></div>
+        <div class="card-field"><div class="card-label">Assy Invoice</div><div class="card-value ${el?'can-edit':''}" ${el?'ondblclick="cardInlineEdit('+o.id+',\'assyInvoice\',this)"':''}>${o.assyInvoice||'—'}</div></div>
+        <div class="card-field"><div class="card-label">AWB</div><div class="card-value ${el?'can-edit':''}" ${el?'ondblclick="cardInlineEdit('+o.id+',\'awb\',this)"':''}>${o.awb||'—'}</div></div>
+        <div class="card-field"><div class="card-label" style="color:var(--purple)">Parts ETA</div><div class="card-value"><span class="${dateClass(o.partsEta)}">${formatDate(o.partsEta)}</span></div></div>
+      </div>
+      <div class="card-sep" style="color:#0369a1;">Takt Times</div>
+      <div class="card-grid">
+        <div class="card-field"><div class="card-label">Parts Inspection</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktPartsInspection)}</div></div>
+        <div class="card-field"><div class="card-label">Pin Insertion</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktPinInsertion)}</div></div>
+        <div class="card-field"><div class="card-label">Pin Inspection</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${isPinType(o.pinOrientation)?formatTakt(o.taktPinInspection):'<span style=\'color:var(--text3);font-style:italic;\'>N/A</span>'}</div></div>
+        <div class="card-field"><div class="card-label">Assembly Takt</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktAssembly)}</div></div>
+        <div class="card-field"><div class="card-label">Issuance Takt</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktIssuance)}</div></div>
+        <div class="card-field"><div class="card-label">Screwing Takt</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktScrewing)}</div></div>
+        <div class="card-field"><div class="card-label">Packaging Takt</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktPackaging)}</div></div>
+        <div class="card-field"><div class="card-label">Final Inspection</div><div class="card-value" style="font-variant-numeric:tabular-nums;">${formatTakt(o.taktFinalInspection)}</div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;padding:8px 0 2px;border-top:1px solid var(--border);">
+        ${taktTotalHtml}
+      </div>
+      <div class="card-footer">
+        <div class="card-dates">
+          <div class="card-date-item"><div class="card-label">Cust RDD</div><div class="card-label" style="font-size:10px"><span class="${dateClass(o.crdd)}">${formatDate(o.crdd)}</span></div></div>
+          <div class="card-date-item"><div class="card-label">ETA</div><div class="card-label" style="font-size:10px"><span class="${dateClass(o.eta)}">${formatDate(o.eta)}</span></div></div>
+          <div class="card-date-item"><div class="card-label" style="color:#b45309;font-weight:700;">📦 ETD</div><div class="card-label" style="font-size:10px"><span class="${dateClass(o.etd)}" style="font-weight:700;">${formatDate(o.etd)}</span></div></div>
+        </div>
+        <div class="card-actions">
+          <button class="card-action-btn" onclick="openFilesModal(${o.id})"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>Attach</button>
+          ${ROLES[currentRole].canAdd?`<button class="card-action-btn" onclick="openEditModal(${o.id})">Edit</button>`:''}
+        </div>
+      </div>`;
+    c.appendChild(card);
+  });
+}
+
+// ─── INLINE EDIT ──────────────────────────────────────────────
+function startPriceEdit(td, id, col, val, qty) {
+  const inp = document.createElement('input');
+  inp.className = 'cell-input';
+  inp.type = 'number'; inp.min = '0'; inp.step = '0.01';
+  inp.value = (val && val !== '') ? +val : '';
+  inp.placeholder = '0.00';
+  td.innerHTML = '';
+  td.appendChild(inp); inp.focus(); inp.select();
+  inp.onblur = () => {
+    const v = inp.value === '' ? '' : parseFloat(inp.value) || 0;
+    inlineEdit(id, col, v);
+  };
+  inp.onkeydown = e => { if(e.key==='Enter') inp.blur(); if(e.key==='Escape'){ renderTable(); } };
+}
+
+function startInlineEdit(td,id,col,val){const inp=document.createElement('input');inp.className='cell-input';inp.value=val||'';td.appendChild(inp);inp.focus();inp.select();inp.onblur=()=>{inlineEdit(id,col,inp.value);inp.remove();};inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')inp.remove();};}
+function startDateEdit(td,id,col,val){const inp=document.createElement('input');inp.className='cell-input';inp.type='date';inp.value=val||'';td.appendChild(inp);inp.focus();inp.onblur=()=>{inlineEdit(id,col,inp.value);inp.remove();};inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')inp.remove();};}
+function startTaktEdit(td,id,col,val){const inp=document.createElement('input');inp.className='cell-input';inp.type='number';inp.min='0';inp.step='0.5';inp.value=(val&&val!=='')?+val:'';inp.placeholder='sec';td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();inp.onblur=()=>{const v=inp.value===''?'':parseFloat(inp.value)||0;inlineEdit(id,col,v);};inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')renderTable();};}
+function cardInlineEdit(id,col,el){if(!isEditable(col)){toast('Your role cannot edit this field','warn');return;}const cur=orders.find(x=>x.id===id)[col]||'';const inp=document.createElement('input');inp.style.cssText='width:100%;background:var(--surface2);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;';inp.value=cur;el.innerHTML='';el.appendChild(inp);inp.focus();inp.select();inp.onblur=()=>inlineEdit(id,col,inp.value);inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')renderTable();};}
+function inlineEdit(id,col,val){
+  if(!isEditable(col)){toast(`${ROLES[currentRole].label} cannot edit "${col}"`, 'warn');renderTable();return;}
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+  o[col]=val;
+  document.getElementById('sb-edit').textContent=`${col} @ ${new Date().toLocaleTimeString()}`;
+  // Auto-move based on Project Status
+  if(col==='projectStatus' && val==='Delivered'){
+    moveToShipped(o);
+    orders = orders.filter(x=>x.id!==id);
+    toast(`📦 "${o.cpo}" moved to Shipped Items!`, 'success');
+  } else if(col==='projectStatus' && val==='Cancelled'){
+    moveToArchive(o, 'Cancelled');
+    orders = orders.filter(x=>x.id!==id);
+    toast(`🚫 "${o.cpo}" cancelled & archived.`, 'warn');
+  } else if(col==='projectStatus' && val==='Forwarded to Stock'){
+    moveToArchive(o, 'Forwarded to Stock');
+    orders = orders.filter(x=>x.id!==id);
+    toast(`📥 "${o.cpo}" forwarded to Stock & archived.`, 'info');
+  } else if(col==='projectStatus' && val==='Delayed'){
+    toast(`⏳ "${o.cpo}" marked Delayed — notifying Sales...`, 'warn');
+    setTimeout(() => openDelayModal(o), 300);
+  } else {
+    toast(`Updated ${col}`);
+  }
+  renderTable();
+}
+
+// ─── SELECTION ────────────────────────────────────────────────
+function toggleRow(id,cb){if(cb.checked)selectedRows.add(id);else selectedRows.delete(id);document.querySelectorAll(`[data-id="${id}"]`).forEach(el=>el.classList.toggle('selected',cb.checked));document.getElementById('sb-selected').textContent=selectedRows.size;}
+function toggleAll(cb){getFilteredOrders().forEach(o=>{if(cb.checked)selectedRows.add(o.id);else selectedRows.delete(o.id);});renderTable();}
+
+// ─── STATS ────────────────────────────────────────────────────
+function updateStats(rows){
+  document.getElementById('stat-total').textContent=rows.length;
+  document.getElementById('stat-open').textContent=rows.filter(o=>o.issuanceStatus==='Open'||o.issuanceStatus==='In Progress').length;
+  document.getElementById('stat-risk').textContent=rows.filter(o=>o.projectStatus==='At Risk'||o.issuanceStatus==='Delayed').length;
+  document.getElementById('sb-rows').textContent=rows.length;
+  document.getElementById('sb-selected').textContent=selectedRows.size;
+  const sites=[...new Set(orders.map(o=>o.site))].sort();
+  const sf=document.getElementById('siteFilter');const cur=sf.value;
+  sf.innerHTML='<option value="">All sites</option>'+sites.map(s=>`<option ${s===cur?'selected':''}>${s}</option>`).join('');
+}
+
+// ─── MODAL ────────────────────────────────────────────────────
+function applyModalAccess(){
+  const r=ROLES[currentRole];
+  ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(!el)return;el.disabled=r.editableCols==='all'?false:!r.editableCols.includes(k);});
+  // totalAssyTakt and totalQcTakt are always read-only
+  ['f-totalAssyTakt','f-totalQcTakt','f-totalAlliancePrice','f-totalCustomerPrice'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=true;});
+  const note=document.getElementById('modalAccessNote');
+  if(r.editableCols==='all'){note.style.display='none';}else{note.style.display='block';note.textContent=`🔒 ${r.label} can only edit: ${r.editableCols.join(', ')}`;}
+}
+function openAddModal(){editingId=null;document.getElementById('modalTitle').textContent='New Order';document.getElementById('saveBtn').textContent='Save Order';ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)el.value='';});document.getElementById('f-totalAlliancePrice').value='';document.getElementById('f-totalCustomerPrice').value='';document.getElementById('f-totalAssyTakt').value='';document.getElementById('f-totalQcTakt').value='';document.getElementById('f-issuanceStatus').value='Open';document.getElementById('f-projectStatus').value='On Track';applyModalAccess();updateModalTaktTotals();document.getElementById('orderModal').classList.add('open');}
+function openEditModal(id){editingId=id;const o=orders.find(x=>x.id===id);document.getElementById('modalTitle').textContent='Edit Order';document.getElementById('saveBtn').textContent='Update Order';ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)el.value=o[k]||'';});updateModalTotals();applyModalAccess();updateModalTaktTotals();document.getElementById('orderModal').classList.add('open');}
+function closeModal(){document.getElementById('orderModal').classList.remove('open');}
+function saveOrder(){
+  const r=ROLES[currentRole];const vals={};
+  ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el&&!el.disabled)vals[k]=el.value;});
+  if(r.editableCols==='all'){if(!vals.site||!vals.cpo){toast('Site and Customer PO# are required','error');return;}}
+  if(editingId){
+    const o=orders.find(x=>x.id===editingId);
+    Object.assign(o,vals);
+    if(vals.projectStatus==='Delivered'){
+      moveToShipped(o);
+      orders=orders.filter(x=>x.id!==editingId);
+      toast(`📦 "${o.cpo}" moved to Shipped Items!`,'success');
+      closeModal(); renderTable(); return;
+    } else if(vals.projectStatus==='Cancelled'){
+      moveToArchive(o,'Cancelled');
+      orders=orders.filter(x=>x.id!==editingId);
+      toast(`🚫 "${o.cpo}" cancelled & archived.`,'warn');
+      closeModal(); renderTable(); return;
+    } else if(vals.projectStatus==='Forwarded to Stock'){
+      moveToArchive(o,'Forwarded to Stock');
+      orders=orders.filter(x=>x.id!==editingId);
+      toast(`📥 "${o.cpo}" forwarded to Stock & archived.`,'info');
+      closeModal(); renderTable(); return;
+    } else if(vals.projectStatus==='Delayed'){
+      toast(`⏳ "${o.cpo}" marked Delayed — notifying Sales...`,'warn');
+      closeModal(); renderTable();
+      setTimeout(()=>openDelayModal(o), 300); return;
+    } else {
+      toast('Order updated');
+    }
+  }
+  else{ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)vals[k]=el.value;});if(!vals.site||!vals.cpo){toast('Site and Customer PO# are required','error');return;}orders.push({id:nextId++,...vals,qty:+vals.qty||1,files:[]});toast('Order added');}
+  closeModal();renderTable();
+}
+
+// ─── FILES ────────────────────────────────────────────────────
+function openFilesModal(id){filesRowId=id;const o=orders.find(x=>x.id===id);document.getElementById('filesRowLabel').textContent=o.cpo;renderFilesList(o);document.getElementById('filesModal').classList.add('open');}
+function closeFilesModal(){document.getElementById('filesModal').classList.remove('open');renderTable();}
+function renderFilesList(o){const list=document.getElementById('filesList');if(!o.files.length){list.innerHTML='<div style="text-align:center;color:var(--text3);font-family:var(--mono);font-size:11px;padding:12px 0;">No attachments yet</div>';return;}list.innerHTML=o.files.map((f,i)=>`<div class="file-item"><div class="file-icon">${fileIcon(f.name)}</div><div class="file-name">${f.name}</div><div class="file-size">${humanSize(f.size)}</div><button class="file-remove" onclick="removeFile(${i})" title="Remove">✕</button></div>`).join('');}
+function addFiles(fl){const o=orders.find(x=>x.id===filesRowId);Array.from(fl).forEach(f=>{o.files.push({name:f.name,size:f.size,type:f.type});toast(`Attached: ${f.name}`,'info');});renderFilesList(o);}
+function removeFile(i){const o=orders.find(x=>x.id===filesRowId);o.files.splice(i,1);renderFilesList(o);}
+function handleFileInput(e){addFiles(e.target.files);e.target.value='';}
+function handleDragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag-over');}
+function handleDragLeave(){document.getElementById('dropZone').classList.remove('drag-over');}
+function handleDrop(e){e.preventDefault();document.getElementById('dropZone').classList.remove('drag-over');addFiles(e.dataTransfer.files);}
+
+// ─── EXPORT ───────────────────────────────────────────────────
+function exportCSV(){
+  const h=['Site','Customer PO#','Alliance PO#','PRS#','QTY','Assy Type','Identification','Part Number','Drawing#','Rev','Issuance Status','Project Status','Customer RDD','Alliance RDD','ETF','ETA','Shipment Invoice','Assy Invoice','AWB','Parts ETA','ETD (Shipment Date)','Assy Classification','Pin Orientation','Alliance Price','Customer Price','Assembly Price','# Pins','# Screws','Parts Inspection (sec)','Pin Insertion (sec)','Pin Inspection (sec)','Assembly Takt (sec)','Issuance Takt (sec)','Screwing Takt (sec)','Packaging Takt (sec)','Final Inspection (sec)','Total Assy Takt (sec)','Total QC Takt (sec)','Files'];
+  const rows=getFilteredOrders().map(o=>{const{totalAssy,totalQc}=calcTaktTotals(o);return[o.site,o.cpo,o.apo,o.prs,o.qty,o.assy,o.ident,o.pn,o.dn,o.rev,o.issuanceStatus,o.projectStatus,o.crdd,o.ardd,o.etf,o.eta,o.shipmentInvoice,o.assyInvoice,o.awb,o.partsEta,o.etd,o.assyClassification,o.pinOrientation,o.alliancePrice,o.customerPrice,o.assyPrice,o.numPins,o.numScrews,o.taktPartsInspection,o.taktPinInsertion,isPinType(o.pinOrientation)?o.taktPinInspection:'N/A',o.taktAssembly,o.taktIssuance,o.taktScrewing,o.taktPackaging,o.taktFinalInspection,totalAssy||'',totalQc||'',o.files.length];});
+  const csv=[h,...rows].map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`order-tracker-${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV exported');
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape'){closeModal();closeFilesModal();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='n'&&ROLES[currentRole].canAdd){e.preventDefault();openAddModal();}
+});
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') attemptLogin(); });
+
+// ─── ADMIN PANEL ─────────────────────────────────────────────
+const AVATAR_COLORS = ['#0ea5e9','#14b8a6','#10b981','#f97316','#8b5cf6','#ef4444','#f59e0b','#ec4899','#6366f1'];
+let editingAccountIdx = null;
+let selectedNewColor  = AVATAR_COLORS[0];
+let selectedEditColor = AVATAR_COLORS[0];
+
+// Make USERS mutable (was const)
+let userList = USERS.slice();
+
+function switchTab(tab) {
+  const isAdmin = currentRole === 'admin';
+  if (tab === 'admin' && !isAdmin) { toast('Admin access only', 'warn'); return; }
+  ['orders','admin','shipped','archive','sales-delay','weekly-plan'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('active', t === tab);
+  });
+  const ordersArea   = document.querySelector('.content-area');
+  const toolbar      = document.querySelector('.toolbar');
+  const adminPanel   = document.getElementById('adminPanel');
+  const shippedPanel = document.getElementById('shippedPanel');
+  const archivePanel = document.getElementById('archivePanel');
+  const salesPanel   = document.getElementById('salesDelayPanel');
+  const weeklyPanel  = document.getElementById('weeklyPlanPanel');
+  const fab          = document.getElementById('fabBtn');
+  // hide all
+  ordersArea.style.display = 'none';
+  toolbar.style.display    = 'none';
+  adminPanel.classList.remove('visible');
+  shippedPanel.classList.remove('visible');
+  archivePanel.classList.remove('visible');
+  if (salesPanel)  salesPanel.style.display  = 'none';
+  if (weeklyPanel) weeklyPanel.style.display = 'none';
+  fab.style.display = 'none';
+  if (tab === 'admin') {
+    adminPanel.classList.add('visible');
+    renderAccountsGrid();
+  } else if (tab === 'shipped') {
+    shippedPanel.classList.add('visible');
+    renderShippedTable();
+  } else if (tab === 'archive') {
+    archivePanel.classList.add('visible');
+    renderArchiveTable();
+  } else if (tab === 'sales-delay') {
+    if (salesPanel) { salesPanel.style.display = 'flex'; renderSalesDelayPanel(); }
+  } else if (tab === 'weekly-plan') {
+    if (weeklyPanel) { weeklyPanel.style.display = 'flex'; renderWeeklyPlan(); }
+  } else {
+    ordersArea.style.display = '';
+    toolbar.style.display    = '';
+    if (ROLES[currentRole].canAdd) fab.style.display = '';
+  }
+}
+
+function buildColorPicker(containerId, currentColor, onSelect) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = AVATAR_COLORS.map(col =>
+    `<div class="color-swatch ${col===currentColor?'selected':''}" style="background:${col}" onclick="pickColor('${containerId}','${col}')"></div>`
+  ).join('');
+}
+
+function pickColor(containerId, color) {
+  if (containerId === 'na-colorPicker') selectedNewColor = color;
+  else selectedEditColor = color;
+  buildColorPicker(containerId, color, null);
+}
+
+function renderAccountsGrid() {
+  document.getElementById('accountCount').textContent = userList.length;
+  const grid = document.getElementById('accountsGrid');
+  grid.innerHTML = userList.map((u, i) => {
+    const initials = u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const isYou = currentUser && u.username === currentUser.username;
+    return `
+    <div class="account-card">
+      <div class="account-card-header">
+        <div class="account-card-left">
+          <div class="account-avatar" style="background:${u.avatarColor}">${initials}</div>
+          <div>
+            <div class="account-name">${u.displayName} ${isYou ? '<span class="you-badge">You</span>' : ''}</div>
+            <div class="account-username">@${u.username}</div>
+          </div>
+        </div>
+        <span class="hint-role-badge ${u.role}">${ROLES[u.role].label}</span>
+      </div>
+      <div class="account-details">
+        <div class="account-detail-item">
+          <div class="account-detail-label">Username</div>
+          <div class="account-detail-value">${u.username}</div>
+        </div>
+        <div class="account-detail-item">
+          <div class="account-detail-label">Role</div>
+          <div class="account-detail-value">${ROLES[u.role].label}</div>
+        </div>
+        <div class="account-detail-item">
+          <div class="account-detail-label">Password</div>
+          <div class="account-detail-value" style="letter-spacing:0.15em">••••••••</div>
+        </div>
+        <div class="account-detail-item">
+          <div class="account-detail-label">Avatar Color</div>
+          <div class="account-detail-value" style="display:flex;align-items:center;gap:6px;">
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${u.avatarColor};flex-shrink:0;"></span>${u.avatarColor}
+          </div>
+        </div>
+      </div>
+      <div class="account-card-actions">
+        <button class="acct-btn" onclick="openEditAccount(${i})">Edit</button>
+        <button class="acct-btn danger" onclick="deleteAccount(${i})" ${isYou?'disabled title="Cannot delete your own account"':''}>Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function createAccount() {
+  const name = document.getElementById('na-name').value.trim();
+  const user = document.getElementById('na-user').value.trim().toLowerCase();
+  const pass = document.getElementById('na-pass').value;
+  const role = document.getElementById('na-role').value;
+  if (!name || !user || !pass) { toast('Name, username, and password are required', 'error'); return; }
+  if (pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+  if (userList.find(u => u.username.toLowerCase() === user)) { toast('Username already exists', 'error'); return; }
+  userList.push({ username: user, password: pass, displayName: name, role, avatarColor: selectedNewColor });
+  // clear form
+  document.getElementById('na-name').value = '';
+  document.getElementById('na-user').value = '';
+  document.getElementById('na-pass').value = '';
+  document.getElementById('na-role').value = 'purchaser';
+  selectedNewColor = AVATAR_COLORS[0];
+  buildColorPicker('na-colorPicker', selectedNewColor, null);
+  renderAccountsGrid();
+  toast('Account created: ' + name, 'success');
+}
+
+function openEditAccount(idx) {
+  editingAccountIdx = idx;
+  const u = userList[idx];
+  document.getElementById('ea-name').value = u.displayName;
+  document.getElementById('ea-user').value = u.username;
+  document.getElementById('ea-pass').value = '';
+  document.getElementById('ea-role').value = u.role;
+  selectedEditColor = u.avatarColor;
+  buildColorPicker('ea-colorPicker', u.avatarColor, null);
+  document.getElementById('editAccountModal').classList.add('open');
+}
+
+function closeEditAccount() {
+  document.getElementById('editAccountModal').classList.remove('open');
+  editingAccountIdx = null;
+}
+
+function saveEditAccount() {
+  if (editingAccountIdx === null) return;
+  const name = document.getElementById('ea-name').value.trim();
+  const user = document.getElementById('ea-user').value.trim().toLowerCase();
+  const pass = document.getElementById('ea-pass').value;
+  const role = document.getElementById('ea-role').value;
+  if (!name || !user) { toast('Name and username are required', 'error'); return; }
+  if (pass && pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+  const conflict = userList.find((u, i) => u.username.toLowerCase() === user && i !== editingAccountIdx);
+  if (conflict) { toast('Username already taken', 'error'); return; }
+  const u = userList[editingAccountIdx];
+  u.displayName  = name;
+  u.username     = user;
+  if (pass) u.password = pass;
+  u.role         = role;
+  u.avatarColor  = selectedEditColor;
+  // if editing self, refresh topbar chip
+  if (currentUser && currentUser.username === userList[editingAccountIdx].username) {
+    currentUser = u;
+    const initials = u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('userAvatar').textContent = initials;
+    document.getElementById('userAvatar').style.background = u.avatarColor;
+    document.getElementById('userNameDisplay').textContent = u.displayName;
+  }
+  closeEditAccount();
+  renderAccountsGrid();
+  toast('Account updated', 'success');
+}
+
+function deleteAccount(idx) {
+  const u = userList[idx];
+  if (currentUser && u.username === currentUser.username) { toast('Cannot delete your own account', 'warn'); return; }
+  if (!confirm('Delete account for ' + u.displayName + '?')) return;
+  userList.splice(idx, 1);
+  renderAccountsGrid();
+  toast('Account deleted', 'info');
+}
+
+// ─── PATCH LOGIN TO USE userList ────────────────────────────
+// Override attemptLogin to use mutable userList
+const _origAttemptLogin = attemptLogin;
+window.attemptLogin = function() {
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const found = userList.find(x => x.username.toLowerCase() === u && x.password === p);
+  if (!found) {
+    document.getElementById('loginError').classList.add('visible');
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+    return;
+  }
+  currentUser = found;
+  setRole(found.role);
+  const initials = found.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const av = document.getElementById('userAvatar');
+  av.textContent = initials;
+  av.style.background = found.avatarColor;
+  document.getElementById('userNameDisplay').textContent = found.displayName;
+  document.getElementById('userChip').style.display = 'flex';
+  document.getElementById('logoutBtn').style.display = '';
+  updateRoleSwitcherLock(found.role);
+  // Show/hide admin tab
+  document.getElementById('tab-admin').classList.toggle('locked-tab', found.role !== 'admin');
+  // Show sales delay tab only for sales role
+  const salesTabEl = document.getElementById('tab-sales-delay');
+  if (salesTabEl) salesTabEl.style.display = (found.role === 'sales') ? '' : 'none';
+  // Update unread delay badge for sales
+  if (found.role === 'sales') {
+    const notices = loadDelayNotices();
+    const unread  = notices.filter(n=>!n.read).length;
+    const badge   = document.getElementById('salesDelayBadge');
+    if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? '' : 'none'; }
+  }
+  document.getElementById('loginOverlay').classList.add('hidden');
+  toast('Welcome, ' + found.displayName.split(' ')[0] + '! Signed in as ' + ROLES[found.role].label + '.', 'info');
+};
+
+// Patch logout to also hide admin tab
+const _origLogout = logout;
+window.logout = function() {
+  // go back to orders tab first
+  switchTab('orders');
+  currentUser = null;
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').classList.remove('visible');
+  document.getElementById('userChip').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('tab-admin').classList.add('locked-tab');
+  document.querySelectorAll('.role-btn').forEach(btn => { btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = ''; btn.title = ''; });
+  selectedRows.clear();
+  switchTab('orders');
+  updateShippedTabBadge();
+updateArchiveTabBadge();
+  toast('Signed out', 'info');
+};
+
+// Patch ESC key to also close edit account modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeEditAccount();
+});
+
+// ─── WEEKLY PLAN ──────────────────────────────────────────────
+let wpWeekOffset = 0;
+
+function getWeekStart(offset) {
+  const now = new Date();
+  const day = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + offset * 7);
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+
+function weeklyPlanNav(dir) { wpWeekOffset += dir; renderWeeklyPlan(); }
+function weeklyPlanGoToday() { wpWeekOffset = 0; renderWeeklyPlan(); }
+
+function renderWeeklyPlan() {
+  const weekStart = getWeekStart(wpWeekOffset);
+  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
+  const fmt = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('wpWeekLabel').textContent = fmt(weekStart) + ' – ' + fmt(weekEnd);
+
+  // Populate site filter
+  const sf = document.getElementById('wpSiteFilter');
+  const prevSite = sf.value;
+  const sites = [...new Set(orders.map(o=>o.site))].sort();
+  sf.innerHTML = '<option value="">All Sites</option>' + sites.map(s=>`<option ${s===prevSite?'selected':''}>${s}</option>`).join('');
+
+  const siteFilter = sf.value;
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Build 7 days Mon-Sun
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart);
+    d.setDate(weekStart.getDate() + i);
+    days.push(d);
+  }
+
+  let assyCount = 0, qcCount = 0, overdueCount = 0;
+
+  // For each day, find orders whose dateAssy or dateQc falls on that day
+  const byDay = days.map(d => {
+    const dStr = d.toISOString().slice(0,10);
+    const matched = [];
+    orders.forEach(o => {
+      if (siteFilter && o.site !== siteFilter) return;
+      const hasAssy = o.dateAssy === dStr;
+      const hasQc   = o.dateQc   === dStr;
+      if (hasAssy || hasQc) matched.push({ order: o, hasAssy, hasQc });
+    });
+    return matched;
+  });
+
+  // Stats
+  byDay.forEach((dayItems, di) => {
+    const d = days[di];
+    dayItems.forEach(({ order, hasAssy, hasQc }) => {
+      if (hasAssy) { assyCount++; if (new Date(order.dateAssy) < today) overdueCount++; }
+      if (hasQc)   { qcCount++;   if (new Date(order.dateQc)   < today) overdueCount++; }
+    });
+  });
+
+  document.getElementById('wp-assy-count').textContent    = assyCount;
+  document.getElementById('wp-qc-count').textContent      = qcCount;
+  document.getElementById('wp-overdue-count').textContent = overdueCount;
+
+  const DAY_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+  const body = document.getElementById('weeklyPlanBody');
+  body.innerHTML = days.map((d, di) => {
+    const dStr     = d.toISOString().slice(0,10);
+    const isToday  = dStr === today.toISOString().slice(0,10);
+    const isWeekend = di >= 5;
+    const dayItems = byDay[di];
+
+    let badgeClass = '', badgeText = 'No orders';
+    if (dayItems.length > 0) {
+      const hasA = dayItems.some(x => x.hasAssy);
+      const hasQ = dayItems.some(x => x.hasQc);
+      const hasOver = dayItems.some(x =>
+        (x.hasAssy && new Date(x.order.dateAssy) < today) ||
+        (x.hasQc   && new Date(x.order.dateQc)   < today));
+      if (hasOver)      badgeClass = 'has-overdue';
+      else if (hasA && hasQ) badgeClass = 'has-both';
+      else if (hasA)    badgeClass = 'has-assy';
+      else if (hasQ)    badgeClass = 'has-qc';
+      badgeText = dayItems.length + ' order' + (dayItems.length > 1 ? 's' : '');
+    }
+
+    const cardsHtml = dayItems.length === 0
+      ? `<div class="wp-empty-day">—</div>`
+      : dayItems.map(({ order: o, hasAssy, hasQc }) => {
+          const both = hasAssy && hasQc;
+          const typeClass = both ? 'type-both' : hasAssy ? 'type-assy' : 'type-qc';
+          const typeBadge = both ? 'both' : hasAssy ? 'assy' : 'qc';
+          const typeName  = both ? '🔧 Assy + 🔍 QC' : hasAssy ? '🔧 Assembly' : '🔍 QC';
+
+          let statusClass = '';
+          if (o.issuanceStatus === 'Delayed')     statusClass = 'status-delayed';
+          else if (o.issuanceStatus === 'Complete') statusClass = 'status-complete';
+          else if (o.issuanceStatus === 'In Progress') statusClass = 'status-in-progress';
+
+          const assyOverdue = hasAssy && o.dateAssy && new Date(o.dateAssy) < today;
+          const qcOverdue   = hasQc   && o.dateQc   && new Date(o.dateQc)   < today;
+          const isOverdue   = assyOverdue || qcOverdue;
+
+          return `<div class="wp-card ${typeClass} ${statusClass}" onclick="openEditModal(${o.id})" title="Click to edit">
+            <span class="wp-card-type-badge ${typeBadge}">${typeName}</span>
+            <div class="wp-card-site">${o.site || '—'}</div>
+            <div class="wp-card-cpo">${o.cpo || '—'}</div>
+            <div class="wp-card-ident">${o.ident || o.pn || '—'}</div>
+            <div class="wp-card-meta">
+              <span class="wp-meta-chip qty">×${o.qty}</span>
+              ${o.assy ? `<span class="wp-meta-chip assy">${o.assy}</span>` : ''}
+              <span class="wp-meta-chip">${o.issuanceStatus || 'Open'}</span>
+              ${isOverdue ? `<span class="wp-meta-chip overdue">⚠ Overdue</span>` : ''}
+            </div>
+          </div>`;
+        }).join('');
+
+    return `<div class="wp-day-col${isWeekend ? ' weekend' : ''}">
+      <div class="wp-day-header${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}">
+        <div class="wp-day-name">${DAY_FULL[di]}</div>
+        <div class="wp-day-date">${d.getDate()}</div>
+        <span class="wp-day-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="wp-day-items">${cardsHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function exportWeeklyPlanCSV() {
+  const weekStart = getWeekStart(wpWeekOffset);
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart); d.setDate(weekStart.getDate() + i); days.push(d);
+  }
+  const siteFilter = document.getElementById('wpSiteFilter').value;
+  const h = ['Date','Day','Type','Site','Customer PO#','Alliance PO#','PRS#','QTY','Assy Type','Identification','Part Number','Issuance Status','Project Status','Date of Assembly','Date of QC'];
+  const rows = [];
+  days.forEach(d => {
+    const dStr = d.toISOString().slice(0,10);
+    const dayName = d.toLocaleDateString('en-US',{weekday:'long'});
+    orders.forEach(o => {
+      if (siteFilter && o.site !== siteFilter) return;
+      const hasAssy = o.dateAssy === dStr;
+      const hasQc   = o.dateQc   === dStr;
+      if (!hasAssy && !hasQc) return;
+      const type = (hasAssy && hasQc) ? 'Assy + QC' : hasAssy ? 'Assembly' : 'QC';
+      rows.push([dStr, dayName, type, o.site, o.cpo, o.apo, o.prs, o.qty, o.assy, o.ident, o.pn, o.issuanceStatus, o.projectStatus, o.dateAssy||'', o.dateQc||'']);
+    });
+  });
+  if (!rows.length) { toast('No orders scheduled this week','warn'); return; }
+  const csv = [h,...rows].map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `weekly-plan-${weekStart.toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('Weekly plan exported');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+initHints();
+checkBreakpoint();
+renderTable();
+buildColorPicker('na-colorPicker', selectedNewColor, null);
+updateShippedTabBadge();
+updateArchiveTabBadge();
+</script>
+</body>
+</html>
