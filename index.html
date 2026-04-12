@@ -718,43 +718,36 @@
   td.takt-disabled::after { display:none !important; }
 
   /* ── WEEKLY PLAN ── */
-  .wp-day-col { flex:1; min-width:155px; display:flex; flex-direction:column; border-right:1px solid var(--border); }
-  .wp-day-col:last-child { border-right:none; }
-  .wp-day-header { position:sticky; top:0; z-index:10; background:var(--surface); border-bottom:2px solid var(--border); padding:10px 12px 8px; display:flex; flex-direction:column; gap:3px; }
-  .wp-day-header.today { border-bottom-color:var(--accent); background:#eff6ff; }
-  .wp-day-header.weekend { background:var(--bg); }
-  .wp-day-name { font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); }
-  .wp-day-header.today .wp-day-name { color:var(--accent); }
-  .wp-day-date { font-family:var(--mono); font-size:20px; font-weight:600; color:var(--text); line-height:1; }
-  .wp-day-header.today .wp-day-date { color:var(--accent); }
-  .wp-day-badge { display:inline-block; font-family:var(--mono); font-size:8px; font-weight:700; padding:1px 7px; border-radius:100px; background:var(--border); color:var(--text3); align-self:flex-start; margin-top:2px; }
-  .wp-day-badge.has-assy { background:rgba(124,58,237,0.12); color:var(--purple); }
-  .wp-day-badge.has-qc   { background:rgba(8,145,178,0.12); color:#0891b2; }
-  .wp-day-badge.has-both { background:rgba(16,185,129,0.12); color:var(--green); }
-  .wp-day-badge.has-overdue { background:rgba(220,38,38,0.12); color:var(--red); }
-  .wp-day-items { flex:1; padding:8px; display:flex; flex-direction:column; gap:6px; overflow-y:auto; min-height:80px; }
-  .wp-day-col.weekend .wp-day-items { background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(0,0,0,0.01) 8px,rgba(0,0,0,0.01) 16px); }
-  .wp-empty-day { display:flex; align-items:center; justify-content:center; flex:1; font-family:var(--mono); font-size:10px; color:var(--text3); opacity:0.4; padding:20px 0; }
-  .wp-card { background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:9px 11px; cursor:pointer; transition:box-shadow 0.15s,border-color 0.15s,transform 0.1s; border-left:3px solid var(--accent); }
-  .wp-card:hover { box-shadow:0 2px 8px rgba(0,0,0,0.1); border-color:var(--border2); transform:translateY(-1px); }
-  .wp-card.type-assy { border-left-color:var(--purple); }
-  .wp-card.type-qc   { border-left-color:#0891b2; }
-  .wp-card.type-both { border-left-color:var(--green); }
-  .wp-card.status-delayed     { background:#fff8f8; }
-  .wp-card.status-complete    { background:#f0fdf4; }
-  .wp-card.status-in-progress { }
-  .wp-card-type-badge { font-family:var(--mono); font-size:8px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:2px 6px; border-radius:4px; display:inline-block; margin-bottom:4px; }
-  .wp-card-type-badge.assy { background:rgba(124,58,237,0.1); color:var(--purple); border:1px solid rgba(124,58,237,0.25); }
-  .wp-card-type-badge.qc   { background:rgba(8,145,178,0.1); color:#0891b2; border:1px solid rgba(8,145,178,0.25); }
-  .wp-card-type-badge.both { background:rgba(16,185,129,0.1); color:var(--green); border:1px solid rgba(16,185,129,0.25); }
-  .wp-card-site  { font-family:var(--mono); font-size:8px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); margin-bottom:2px; }
-  .wp-card-cpo   { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--text); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .wp-card-ident { font-family:var(--sans); font-size:10px; color:var(--text2); margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .wp-card-meta  { display:flex; flex-wrap:wrap; gap:4px; align-items:center; }
-  .wp-meta-chip  { font-family:var(--mono); font-size:8px; padding:2px 6px; border-radius:4px; border:1px solid var(--border); background:var(--bg); color:var(--text2); white-space:nowrap; }
-  .wp-meta-chip.qty     { border-color:rgba(37,99,235,0.3); background:rgba(37,99,235,0.06); color:var(--accent); }
-  .wp-meta-chip.assy    { border-color:rgba(124,58,237,0.3); background:rgba(124,58,237,0.06); color:var(--purple); }
-  .wp-meta-chip.overdue { border-color:rgba(220,38,38,0.3); background:rgba(220,38,38,0.06); color:var(--red); font-weight:700; }
+  .wp-day-col{flex:1;min-width:150px;display:flex;flex-direction:column;border-right:1px solid var(--border);}
+  .wp-day-col:last-child{border-right:none;}
+  .wp-day-header{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:2px solid var(--border);padding:10px 12px 9px;display:flex;flex-direction:column;gap:3px;}
+  .wp-day-header.today{border-bottom-color:var(--accent);background:#eff6ff;}
+  .wp-day-header.weekend{background:var(--bg);}
+  .wp-day-name{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);}
+  .wp-day-header.today .wp-day-name{color:var(--accent);}
+  .wp-day-date{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--text);line-height:1.1;}
+  .wp-day-header.today .wp-day-date{color:var(--accent);}
+  .wp-day-count{font-family:var(--mono);font-size:8px;font-weight:700;padding:2px 8px;border-radius:100px;align-self:flex-start;margin-top:3px;background:var(--border);color:var(--text3);}
+  .wp-day-count.has-items{background:rgba(124,58,237,0.12);color:var(--purple);}
+  .wp-day-count.has-overdue{background:rgba(220,38,38,0.12);color:var(--red);}
+  .wp-day-items{flex:1;padding:8px;display:flex;flex-direction:column;gap:6px;overflow-y:auto;}
+  .wp-day-col.weekend .wp-day-items{background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(0,0,0,0.015) 8px,rgba(0,0,0,0.015) 16px);}
+  .wp-empty-day{font-family:var(--mono);font-size:10px;color:var(--text3);opacity:0.4;text-align:center;padding:24px 0;}
+  .wp-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:7px;padding:9px 11px;cursor:pointer;transition:box-shadow 0.15s,border-color 0.15s,transform 0.1s;}
+  .wp-card:hover{box-shadow:0 2px 10px rgba(0,0,0,0.1);border-color:var(--border2);transform:translateY(-1px);}
+  .wp-card.delayed{border-left-color:var(--red);background:#fff8f8;}
+  .wp-card.complete{border-left-color:var(--green);background:#f0fdf4;}
+  .wp-card.in-progress{border-left-color:var(--teal);}
+  .wp-card.pending{border-left-color:var(--amber);}
+  .wp-card.overdue-card{border-left-color:var(--red);}
+  .wp-card-site{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
+  .wp-card-cpo{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wp-card-ident{font-family:var(--sans);font-size:10px;color:var(--text2);margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wp-card-chips{display:flex;flex-wrap:wrap;gap:4px;}
+  .wp-chip{font-family:var(--mono);font-size:8px;padding:2px 6px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:var(--text2);white-space:nowrap;}
+  .wp-chip.qty{border-color:rgba(37,99,235,0.3);background:rgba(37,99,235,0.06);color:var(--accent);}
+  .wp-chip.assy{border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.06);color:var(--purple);}
+  .wp-chip.overdue{border-color:rgba(220,38,38,0.3);background:rgba(220,38,38,0.06);color:var(--red);font-weight:700;}
 </style>
 </head>
 <body>
@@ -815,6 +808,9 @@
     <div class="stat-pill">Total: <span id="stat-total">0</span></div>
     <div class="stat-pill hide-xs">Open: <span id="stat-open">0</span></div>
     <div class="stat-pill hide-xs">At Risk: <span id="stat-risk">0</span></div>
+    <div class="stat-pill hide-xs" style="gap:6px;" title="Supabase DB status">
+      <div id="dbStatusDot" style="width:7px;height:7px;border-radius:50%;background:#94a3b8;flex-shrink:0;transition:background 0.3s;"></div>DB
+    </div>
   </div>
 </div>
 
@@ -887,9 +883,9 @@
         <col class="col-pn"/><col class="col-dn"/><col class="col-rev"/>
         <col class="col-istat"/><col class="col-pstat"/>
         <col class="col-crdd"/><col class="col-ardd"/><col class="col-etf"/><col class="col-eta"/>
+        <col style="width:145px;"/>
         <col class="col-sinv"/><col class="col-ainv"/><col class="col-awb"/><col class="col-peta"/>
         <col class="col-etd"/>
-        <col style="width:140px;"/><col style="width:130px;"/>
         <col class="col-assyclass"/><col class="col-pinori"/><col class="col-aprice"/><col class="col-taprice"/><col class="col-cprice"/><col class="col-tcprice"/>
         <col class="col-aprice2"/><col class="col-npins"/><col class="col-nscrews"/>
         <col class="col-takt-pi"/><col class="col-takt-pinins"/><col class="col-takt-pinchk"/>
@@ -917,8 +913,7 @@
           <th onclick="sortBy('ardd')">Alliance RDD <span class="sort-icon" id="sort-ardd">↕</span></th>
           <th onclick="sortBy('etf')">ETF <span class="sort-icon" id="sort-etf">↕</span></th>
           <th onclick="sortBy('eta')">ETA <span class="sort-icon" id="sort-eta">↕</span></th>
-          <th onclick="sortBy('dateAssy')" style="color:#7c3aed;">🔧 Date of Assembly <span class="sort-icon" id="sort-dateAssy">↕</span></th>
-          <th onclick="sortBy('dateQc')" style="color:#0891b2;">🔍 Date of QC <span class="sort-icon" id="sort-dateQc">↕</span></th>
+          <th onclick="sortBy('dateAssy')" style="color:#7c3aed;white-space:nowrap;">📅 Date of Assembly <span class="sort-icon" id="sort-dateAssy">↕</span></th>
           <th class="g-logistics" onclick="sortBy('shipmentInvoice')">Shipment Invoice <span class="sort-icon" id="sort-shipmentInvoice">↕</span></th>
           <th class="g-logistics" onclick="sortBy('assyInvoice')">Assy Invoice <span class="sort-icon" id="sort-assyInvoice">↕</span></th>
           <th class="g-logistics" onclick="sortBy('awb')">AWB <span class="sort-icon" id="sort-awb">↕</span></th>
@@ -986,8 +981,7 @@
       <div class="form-group"><label class="form-label">Alliance RDD</label><input class="form-input" id="f-ardd" type="date"/></div>
       <div class="form-group"><label class="form-label">ETF</label><input class="form-input" id="f-etf" type="date"/></div>
       <div class="form-group"><label class="form-label">ETA</label><input class="form-input" id="f-eta" type="date"/></div>
-      <div class="form-group"><label class="form-label" style="color:#7c3aed;font-weight:700;">🔧 Date of Assembly</label><input class="form-input" id="f-dateAssy" type="date" style="border-color:rgba(124,58,237,0.4);background:#faf5ff;"/></div>
-      <div class="form-group"><label class="form-label" style="color:#0891b2;font-weight:700;">🔍 Date of QC</label><input class="form-input" id="f-dateQc" type="date" style="border-color:rgba(8,145,178,0.4);background:#f0f9ff;"/></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="form-label" style="color:#7c3aed;font-weight:700;">📅 Date of Assembly</label><input class="form-input" id="f-dateAssy" type="date" style="border-color:rgba(124,58,237,0.4);background:#faf5ff;max-width:220px;"/></div>
     </div>
     <div class="modal-section inventory">Inventory</div>
     <div class="form-grid">
@@ -1183,19 +1177,14 @@
 <div id="weeklyPlanPanel" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
   <div class="shipped-toolbar" style="border-bottom-color:#ddd6fe;gap:12px;flex-wrap:wrap;">
     <div style="display:flex;align-items:center;gap:8px;">
-      <button class="toolbar-btn" onclick="weeklyPlanNav(-1)" title="Previous Week">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
+      <button class="toolbar-btn" onclick="weeklyPlanNav(-1)"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
       <span id="wpWeekLabel" style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;min-width:210px;text-align:center;"></span>
-      <button class="toolbar-btn" onclick="weeklyPlanNav(1)" title="Next Week">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-      <button class="toolbar-btn" onclick="weeklyPlanGoToday()" style="font-size:9px;letter-spacing:0.05em;">Today</button>
+      <button class="toolbar-btn" onclick="weeklyPlanNav(1)"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button class="toolbar-btn" onclick="weeklyPlanGoToday()">Today</button>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <div class="shipped-stat" style="border-color:rgba(124,58,237,0.3);background:#faf5ff;"><span id="wp-assy-count" style="color:var(--purple);font-weight:700;">0</span>&nbsp;Assembly</div>
-      <div class="shipped-stat" style="border-color:rgba(8,145,178,0.3);background:#f0f9ff;"><span id="wp-qc-count" style="color:#0891b2;font-weight:700;">0</span>&nbsp;QC</div>
-      <div class="shipped-stat" style="border-color:rgba(220,38,38,0.3);background:#fff8f8;"><span id="wp-overdue-count" style="color:var(--red);font-weight:700;">0</span>&nbsp;Overdue</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="shipped-stat" style="border-color:rgba(124,58,237,0.3);background:#faf5ff;"><span id="wp-week-count" style="color:var(--purple);font-weight:700;">0</span>&nbsp;scheduled this week</div>
+      <div class="shipped-stat" style="border-color:rgba(220,38,38,0.3);background:#fff8f8;"><span id="wp-overdue-count" style="color:var(--red);font-weight:700;">0</span>&nbsp;overdue</div>
     </div>
     <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
       <label style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;">Site:</label>
@@ -1206,7 +1195,7 @@
       </button>
     </div>
   </div>
-  <div id="weeklyPlanBody" style="flex:1;overflow:auto;display:flex;gap:0;"></div>
+  <div id="weeklyPlanBody" style="flex:1;overflow:auto;display:flex;"></div>
 </div>
 
 <!-- SHIPPED ITEMS PANEL -->
@@ -1340,7 +1329,106 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ─── SUPABASE CONFIG ──────────────────────────────────────────
+const SUPA_URL = 'https://yykhxqwbvhjbtonbaqfv.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5a2h4cXdidmhqYnRvbmJhcWZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5OTIyMzksImV4cCI6MjA5MTU2ODIzOX0.KTlAJ71WwZ5DaFpsbdWic2BJjjvRDq0nvHC-DhAFz_A';
+const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+function dbToApp(r) {
+  return {
+    id: r.id,
+    site: r.site||'', cpo: r.cpo||'', apo: r.apo||'', prs: r.prs||'',
+    qty: r.qty||1, assy: r.assy||'', ident: r.ident||'', pn: r.pn||'',
+    dn: r.dn||'', rev: r.rev||'',
+    issuanceStatus: r.issuance_status||'Open',
+    projectStatus:  r.project_status||'On Track',
+    crdd: r.crdd||'', ardd: r.ardd||'', etf: r.etf||'', eta: r.eta||'',
+    dateAssy: r.date_assy||'',
+    shipmentInvoice: r.shipment_invoice||'', assyInvoice: r.assy_invoice||'',
+    awb: r.awb||'', partsEta: r.parts_eta||'', etd: r.etd||'',
+    assyClassification: r.assy_classification||'', pinOrientation: r.pin_orientation||'',
+    alliancePrice: r.alliance_price??'', customerPrice: r.customer_price??'',
+    assyPrice: r.assy_price??'',
+    numPins: r.num_pins??0, numScrews: r.num_screws??0,
+    taktPartsInspection: r.takt_parts_inspection??'',
+    taktPinInsertion:    r.takt_pin_insertion??'',
+    taktPinInspection:   r.takt_pin_inspection??'',
+    taktAssembly:        r.takt_assembly??'',
+    taktIssuance:        r.takt_issuance??'',
+    taktScrewing:        r.takt_screwing??'',
+    taktPackaging:       r.takt_packaging??'',
+    taktFinalInspection: r.takt_final_inspection??'',
+    files: [],
+  };
+}
+
+function appToDB(o) {
+  const n = v => (v===''||v===null||v===undefined) ? null : +v;
+  const s = v => v||null;
+  const d = v => v||null;
+  return {
+    site: s(o.site), cpo: s(o.cpo), apo: s(o.apo), prs: s(o.prs),
+    qty: +o.qty||1, assy: s(o.assy), ident: s(o.ident), pn: s(o.pn),
+    dn: s(o.dn), rev: s(o.rev),
+    issuance_status: s(o.issuanceStatus)||'Open',
+    project_status:  s(o.projectStatus)||'On Track',
+    crdd: d(o.crdd), ardd: d(o.ardd), etf: d(o.etf), eta: d(o.eta),
+    date_assy: d(o.dateAssy),
+    shipment_invoice: s(o.shipmentInvoice), assy_invoice: s(o.assyInvoice),
+    awb: s(o.awb), parts_eta: d(o.partsEta), etd: d(o.etd),
+    assy_classification: s(o.assyClassification), pin_orientation: s(o.pinOrientation),
+    alliance_price: n(o.alliancePrice), customer_price: n(o.customerPrice),
+    assy_price: n(o.assyPrice),
+    num_pins: n(o.numPins)||0, num_screws: n(o.numScrews)||0,
+    takt_parts_inspection: n(o.taktPartsInspection),
+    takt_pin_insertion:    n(o.taktPinInsertion),
+    takt_pin_inspection:   n(o.taktPinInspection),
+    takt_assembly:         n(o.taktAssembly),
+    takt_issuance:         n(o.taktIssuance),
+    takt_screwing:         n(o.taktScrewing),
+    takt_packaging:        n(o.taktPackaging),
+    takt_final_inspection: n(o.taktFinalInspection),
+  };
+}
+
+function setDbDot(state, msg) {
+  const el = document.getElementById('dbStatusDot');
+  if (!el) return;
+  if      (state==='loading') { el.style.background='#f59e0b'; el.title='Connecting to Supabase…'; }
+  else if (state==='ok')      { el.style.background='#10b981'; el.title='Connected to Supabase'; }
+  else                        { el.style.background='#ef4444'; el.title='DB Error: '+msg; }
+}
+
+async function loadOrdersFromDB() {
+  setDbDot('loading');
+  const { data, error } = await sb.from('orders').select('*').order('id', { ascending: true });
+  if (error) { setDbDot('error', error.message); toast('DB Error: '+error.message,'error'); return; }
+  orders = (data||[]).map(dbToApp);
+  setDbDot('ok');
+  renderTable();
+  updateShippedTabBadge();
+  updateArchiveTabBadge();
+}
+
+async function dbInsert(vals) {
+  const { data, error } = await sb.from('orders').insert(appToDB(vals)).select().single();
+  if (error) { toast('DB Error: '+error.message,'error'); return null; }
+  return dbToApp(data);
+}
+
+async function dbUpdate(id, o) {
+  const { error } = await sb.from('orders').update(appToDB(o)).eq('id', id);
+  if (error) { toast('DB Error: '+error.message,'error'); return false; }
+  return true;
+}
+
+async function dbDelete(id) {
+  const { error } = await sb.from('orders').delete().eq('id', id);
+  if (error) { toast('DB Error: '+error.message,'error'); return false; }
+  return true;
+}
 // ─── USER ACCOUNTS ────────────────────────────────────────────
 // To add/change users, edit this array.
 const USERS = [
@@ -1384,7 +1472,6 @@ const COLS = [
   { key:'etf',             special:'date',     owner:null },
   { key:'eta',             special:'date',     owner:null },
   { key:'dateAssy',        special:'date',     owner:'planner' },
-  { key:'dateQc',          special:'date',     owner:'planner' },
   { key:'shipmentInvoice', special:null,       owner:'logistics' },
   { key:'assyInvoice',     special:null,       owner:'logistics' },
   { key:'awb',             special:null,       owner:'logistics' },
@@ -1415,7 +1502,7 @@ const COLS = [
 ];
 
 const ALL_FORM_KEYS = ['site','qty','cpo','apo','prs','assy','ident','pn','dn','rev',
-                       'crdd','ardd','etf','eta','dateAssy','dateQc','issuanceStatus','projectStatus',
+                       'crdd','ardd','etf','eta','dateAssy','issuanceStatus','projectStatus',
                        'shipmentInvoice','assyInvoice','awb','partsEta','etd',
                        'alliancePrice','customerPrice','assyPrice',
                        'numPins','numScrews',
@@ -1434,18 +1521,8 @@ let sortCol      = null;
 let sortDir      = 1;
 let selectedRows = new Set();
 
-// ─── SAMPLE DATA ──────────────────────────────────────────────
-let orders = [
-  { id:1,  site:'PHX-01', cpo:'CPO-100421', apo:'APO-88301', prs:'PRS-44201', qty:5,  assy:'Mechanical', ident:'Main Frame',      pn:'PN-MF-0042', dn:'DWG-MF-0042', rev:'C', issuanceStatus:'In Progress', projectStatus:'On Track', crdd:'2025-06-15', ardd:'2025-06-10', etf:'2025-06-08', eta:'2025-06-12', shipmentInvoice:'SI-001122', assyInvoice:'AI-001122', awb:'AWB-991122', partsEta:'2025-06-05', etd:'2025-06-14', assyClassification:'Jaguar', pinOrientation:'With Orientation', alliancePrice:1200, customerPrice:1800, assyPrice:200, numPins:48, numScrews:8, taktPartsInspection:12, taktPinInsertion:25, taktPinInspection:10, taktAssembly:30, taktIssuance:8, taktScrewing:15, taktPackaging:10, taktFinalInspection:20, files:[] },
-  { id:2,  site:'LAX-02', cpo:'CPO-100422', apo:'APO-88302', prs:'PRS-44202', qty:12, assy:'Electrical',  ident:'Control Panel',   pn:'PN-CP-0108', dn:'DWG-CP-0108', rev:'A', issuanceStatus:'Open',        projectStatus:'On Track', crdd:'2025-07-01', ardd:'2025-06-28', etf:'2025-06-25', eta:'2025-06-30', shipmentInvoice:'',         assyInvoice:'',         awb:'',           partsEta:'2025-06-20', etd:'2025-07-02', assyClassification:'Strip', pinOrientation:'Without Orientation', alliancePrice:450, customerPrice:620, assyPrice:80, numPins:0, numScrews:4, taktPartsInspection:8, taktPinInsertion:0, taktPinInspection:0, taktAssembly:20, taktIssuance:5, taktScrewing:8, taktPackaging:7, taktFinalInspection:15, files:[] },
-  { id:3,  site:'PHX-01', cpo:'CPO-100423', apo:'APO-88303', prs:'PRS-44203', qty:3,  assy:'Hydraulic',   ident:'Pump Assembly',   pn:'PN-PA-0033', dn:'DWG-PA-0033', rev:'B', issuanceStatus:'Delayed',     projectStatus:'At Risk',  crdd:'2025-05-20', ardd:'2025-05-18', etf:'2025-05-15', eta:'2025-05-25', shipmentInvoice:'SI-001133', assyInvoice:'AI-001133', awb:'AWB-991133', partsEta:'2025-05-12', etd:'2025-05-27', assyClassification:'OTQ', pinOrientation:'N/A', alliancePrice:3300, customerPrice:4800, assyPrice:550, numPins:0, numScrews:12, taktPartsInspection:15, taktPinInsertion:0, taktPinInspection:0, taktAssembly:45, taktIssuance:10, taktScrewing:22, taktPackaging:12, taktFinalInspection:25, files:[] },
-  { id:4,  site:'SEA-03', cpo:'CPO-100424', apo:'APO-88304', prs:'PRS-44204', qty:8,  assy:'Structural',  ident:'Support Bracket', pn:'PN-SB-0071', dn:'DWG-SB-0071', rev:'D', issuanceStatus:'Complete',    projectStatus:'Complete', crdd:'2025-04-30', ardd:'2025-04-28', etf:'2025-04-25', eta:'2025-04-29', shipmentInvoice:'SI-001144', assyInvoice:'AI-001144', awb:'AWB-991144', partsEta:'2025-04-22', etd:'2025-05-01', assyClassification:'QFN', pinOrientation:'With Orientation', alliancePrice:780, customerPrice:1050, assyPrice:130, numPins:32, numScrews:6, taktPartsInspection:10, taktPinInsertion:18, taktPinInspection:8, taktAssembly:25, taktIssuance:6, taktScrewing:12, taktPackaging:8, taktFinalInspection:18, files:[] },
-  { id:5,  site:'LAX-02', cpo:'CPO-100425', apo:'APO-88305', prs:'PRS-44205', qty:20, assy:'Electronic',  ident:'Sensor Array',    pn:'PN-SA-0199', dn:'DWG-SA-0199', rev:'A', issuanceStatus:'Pending',     projectStatus:'At Risk',  crdd:'2025-08-10', ardd:'2025-08-05', etf:'2025-08-01', eta:'2025-08-07', shipmentInvoice:'',         assyInvoice:'',         awb:'',           partsEta:'2025-07-28', etd:'2025-08-09', assyClassification:'BGAT', pinOrientation:'Without Orientation', alliancePrice:220, customerPrice:310, assyPrice:40, numPins:0, numScrews:3, taktPartsInspection:6, taktPinInsertion:0, taktPinInspection:0, taktAssembly:15, taktIssuance:4, taktScrewing:6, taktPackaging:5, taktFinalInspection:12, files:[] },
-  { id:6,  site:'DEN-04', cpo:'CPO-100426', apo:'APO-88306', prs:'PRS-44206', qty:1,  assy:'Mechanical',  ident:'Gear Housing',    pn:'PN-GH-0015', dn:'DWG-GH-0015', rev:'B', issuanceStatus:'In Progress', projectStatus:'On Track', crdd:'2025-06-30', ardd:'2025-06-25', etf:'2025-06-22', eta:'2025-06-27', shipmentInvoice:'SI-001155', assyInvoice:'AI-001155', awb:'AWB-991155', partsEta:'2025-06-18', etd:'2025-06-29', assyClassification:'WCSP', pinOrientation:'N/A', alliancePrice:5600, customerPrice:7200, assyPrice:900, numPins:0, numScrews:20, taktPartsInspection:20, taktPinInsertion:0, taktPinInspection:0, taktAssembly:60, taktIssuance:15, taktScrewing:35, taktPackaging:18, taktFinalInspection:30, files:[] },
-  { id:7,  site:'SEA-03', cpo:'CPO-100427', apo:'APO-88307', prs:'PRS-44207', qty:6,  assy:'Pneumatic',   ident:'Valve Block',     pn:'PN-VB-0088', dn:'DWG-VB-0088', rev:'C', issuanceStatus:'Open',        projectStatus:'On Track', crdd:'2025-07-15', ardd:'2025-07-12', etf:'2025-07-09', eta:'2025-07-13', shipmentInvoice:'',         assyInvoice:'',         awb:'',           partsEta:'2025-07-05', etd:'2025-07-15', assyClassification:'FP', pinOrientation:'With Orientation', alliancePrice:1100, customerPrice:1500, assyPrice:180, numPins:64, numScrews:10, taktPartsInspection:14, taktPinInsertion:35, taktPinInspection:14, taktAssembly:40, taktIssuance:9, taktScrewing:18, taktPackaging:11, taktFinalInspection:22, files:[] },
-  { id:8,  site:'PHX-01', cpo:'CPO-100428', apo:'APO-88308', prs:'PRS-44208', qty:4,  assy:'Electrical',  ident:'Wiring Harness',  pn:'PN-WH-0054', dn:'DWG-WH-0054', rev:'A', issuanceStatus:'Complete',    projectStatus:'Closed',   crdd:'2025-04-15', ardd:'2025-04-12', etf:'2025-04-10', eta:'2025-04-13', shipmentInvoice:'SI-001166', assyInvoice:'AI-001166', awb:'AWB-991166', partsEta:'2025-04-08', etd:'2025-04-15', assyClassification:'Strip', pinOrientation:'Without Orientation', alliancePrice:960, customerPrice:1300, assyPrice:160, numPins:0, numScrews:7, taktPartsInspection:9, taktPinInsertion:0, taktPinInspection:0, taktAssembly:28, taktIssuance:7, taktScrewing:13, taktPackaging:9, taktFinalInspection:16, files:[] },
-];
-let nextId = 9;
+// Orders loaded from Supabase after login
+let orders = [];
 
 // ─── LOGIN ────────────────────────────────────────────────────
 function initHints() {
@@ -1466,10 +1543,10 @@ function fillLogin(user, pass) {
   document.getElementById('loginError').classList.remove('visible');
 }
 
-function attemptLogin() {
+async function attemptLogin() {
   const u = document.getElementById('loginUser').value.trim().toLowerCase();
   const p = document.getElementById('loginPass').value;
-  const found = USERS.find(x => x.username.toLowerCase() === u && x.password === p);
+  const found = userList.find(x => x.username.toLowerCase() === u && x.password === p);
   if (!found) {
     document.getElementById('loginError').classList.add('visible');
     document.getElementById('loginPass').value = '';
@@ -1477,9 +1554,7 @@ function attemptLogin() {
     return;
   }
   currentUser = found;
-  // Auto-set role from the user's account
   setRole(found.role);
-  // Update user chip in topbar
   const initials = found.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   const av = document.getElementById('userAvatar');
   av.textContent = initials;
@@ -1487,11 +1562,21 @@ function attemptLogin() {
   document.getElementById('userNameDisplay').textContent = found.displayName;
   document.getElementById('userChip').style.display = 'flex';
   document.getElementById('logoutBtn').style.display = '';
-  // Lock the role switcher if not admin/planner
   updateRoleSwitcherLock(found.role);
-  // Dismiss overlay
+  // Unlock admin tab for admin role
+  document.getElementById('tab-admin').classList.toggle('locked-tab', found.role !== 'admin');
+  // Show sales delay tab only for sales
+  const salesTabEl = document.getElementById('tab-sales-delay');
+  if (salesTabEl) salesTabEl.style.display = (found.role === 'sales') ? '' : 'none';
+  if (found.role === 'sales') {
+    const notices = loadDelayNotices();
+    const unread = notices.filter(n=>!n.read).length;
+    const badge = document.getElementById('salesDelayBadge');
+    if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? '' : 'none'; }
+  }
   document.getElementById('loginOverlay').classList.add('hidden');
-  toast(`Welcome, ${found.displayName.split(' ')[0]}! Signed in as ${ROLES[found.role].label}.`, 'info');
+  toast('Welcome, ' + found.displayName.split(' ')[0] + '! Loading orders…', 'info');
+  await loadOrdersFromDB();
 }
 
 function updateRoleSwitcherLock(role) {
@@ -1506,18 +1591,24 @@ function updateRoleSwitcherLock(role) {
 }
 
 function logout() {
+  switchTab('orders');
   currentUser = null;
+  orders = [];
   document.getElementById('loginOverlay').classList.remove('hidden');
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
   document.getElementById('loginError').classList.remove('visible');
   document.getElementById('userChip').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'none';
-  // Re-enable role switcher
+  document.getElementById('tab-admin').classList.add('locked-tab');
   document.querySelectorAll('.role-btn').forEach(btn => {
     btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = ''; btn.title = '';
   });
   selectedRows.clear();
+  renderTable();
+  updateShippedTabBadge();
+  updateArchiveTabBadge();
+  setDbDot('loading');
   toast('Signed out', 'info');
 }
 
@@ -2189,31 +2280,25 @@ function startInlineEdit(td,id,col,val){const inp=document.createElement('input'
 function startDateEdit(td,id,col,val){const inp=document.createElement('input');inp.className='cell-input';inp.type='date';inp.value=val||'';td.appendChild(inp);inp.focus();inp.onblur=()=>{inlineEdit(id,col,inp.value);inp.remove();};inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')inp.remove();};}
 function startTaktEdit(td,id,col,val){const inp=document.createElement('input');inp.className='cell-input';inp.type='number';inp.min='0';inp.step='0.5';inp.value=(val&&val!=='')?+val:'';inp.placeholder='sec';td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();inp.onblur=()=>{const v=inp.value===''?'':parseFloat(inp.value)||0;inlineEdit(id,col,v);};inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')renderTable();};}
 function cardInlineEdit(id,col,el){if(!isEditable(col)){toast('Your role cannot edit this field','warn');return;}const cur=orders.find(x=>x.id===id)[col]||'';const inp=document.createElement('input');inp.style.cssText='width:100%;background:var(--surface2);border:1px solid var(--accent);border-radius:3px;padding:2px 6px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;';inp.value=cur;el.innerHTML='';el.appendChild(inp);inp.focus();inp.select();inp.onblur=()=>inlineEdit(id,col,inp.value);inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape')renderTable();};}
-function inlineEdit(id,col,val){
+async function inlineEdit(id,col,val){
   if(!isEditable(col)){toast(`${ROLES[currentRole].label} cannot edit "${col}"`, 'warn');renderTable();return;}
-  const o=orders.find(x=>x.id===id);
-  if(!o)return;
+  const o=orders.find(x=>x.id===id); if(!o)return;
   o[col]=val;
+  await dbUpdate(id,o);
   document.getElementById('sb-edit').textContent=`${col} @ ${new Date().toLocaleTimeString()}`;
-  // Auto-move based on Project Status
-  if(col==='projectStatus' && val==='Delivered'){
-    moveToShipped(o);
-    orders = orders.filter(x=>x.id!==id);
-    toast(`📦 "${o.cpo}" moved to Shipped Items!`, 'success');
-  } else if(col==='projectStatus' && val==='Cancelled'){
-    moveToArchive(o, 'Cancelled');
-    orders = orders.filter(x=>x.id!==id);
-    toast(`🚫 "${o.cpo}" cancelled & archived.`, 'warn');
-  } else if(col==='projectStatus' && val==='Forwarded to Stock'){
-    moveToArchive(o, 'Forwarded to Stock');
-    orders = orders.filter(x=>x.id!==id);
-    toast(`📥 "${o.cpo}" forwarded to Stock & archived.`, 'info');
-  } else if(col==='projectStatus' && val==='Delayed'){
-    toast(`⏳ "${o.cpo}" marked Delayed — notifying Sales...`, 'warn');
-    setTimeout(() => openDelayModal(o), 300);
-  } else {
-    toast(`Updated ${col}`);
-  }
+  if(col==='projectStatus'&&val==='Delivered'){
+    moveToShipped(o); orders=orders.filter(x=>x.id!==id); await dbDelete(id);
+    toast(`📦 "${o.cpo}" moved to Shipped Items!`,'success');
+  } else if(col==='projectStatus'&&val==='Cancelled'){
+    moveToArchive(o,'Cancelled'); orders=orders.filter(x=>x.id!==id); await dbDelete(id);
+    toast(`🚫 "${o.cpo}" cancelled & archived.`,'warn');
+  } else if(col==='projectStatus'&&val==='Forwarded to Stock'){
+    moveToArchive(o,'Forwarded to Stock'); orders=orders.filter(x=>x.id!==id); await dbDelete(id);
+    toast(`📥 "${o.cpo}" forwarded to Stock & archived.`,'info');
+  } else if(col==='projectStatus'&&val==='Delayed'){
+    toast(`⏳ "${o.cpo}" marked Delayed — notifying Sales...`,'warn');
+    setTimeout(()=>openDelayModal(o),300);
+  } else { toast(`Updated ${col}`); }
   renderTable();
 }
 
@@ -2245,38 +2330,36 @@ function applyModalAccess(){
 function openAddModal(){editingId=null;document.getElementById('modalTitle').textContent='New Order';document.getElementById('saveBtn').textContent='Save Order';ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)el.value='';});document.getElementById('f-totalAlliancePrice').value='';document.getElementById('f-totalCustomerPrice').value='';document.getElementById('f-totalAssyTakt').value='';document.getElementById('f-totalQcTakt').value='';document.getElementById('f-issuanceStatus').value='Open';document.getElementById('f-projectStatus').value='On Track';applyModalAccess();updateModalTaktTotals();document.getElementById('orderModal').classList.add('open');}
 function openEditModal(id){editingId=id;const o=orders.find(x=>x.id===id);document.getElementById('modalTitle').textContent='Edit Order';document.getElementById('saveBtn').textContent='Update Order';ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)el.value=o[k]||'';});updateModalTotals();applyModalAccess();updateModalTaktTotals();document.getElementById('orderModal').classList.add('open');}
 function closeModal(){document.getElementById('orderModal').classList.remove('open');}
-function saveOrder(){
-  const r=ROLES[currentRole];const vals={};
+async function saveOrder(){
+  const r=ROLES[currentRole]; const vals={};
   ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el&&!el.disabled)vals[k]=el.value;});
   if(r.editableCols==='all'){if(!vals.site||!vals.cpo){toast('Site and Customer PO# are required','error');return;}}
   if(editingId){
     const o=orders.find(x=>x.id===editingId);
     Object.assign(o,vals);
+    const ok=await dbUpdate(editingId,o); if(!ok)return;
     if(vals.projectStatus==='Delivered'){
-      moveToShipped(o);
-      orders=orders.filter(x=>x.id!==editingId);
-      toast(`📦 "${o.cpo}" moved to Shipped Items!`,'success');
-      closeModal(); renderTable(); return;
+      moveToShipped(o); orders=orders.filter(x=>x.id!==editingId); await dbDelete(editingId);
+      toast(`📦 "${o.cpo}" moved to Shipped Items!`,'success'); closeModal(); renderTable(); return;
     } else if(vals.projectStatus==='Cancelled'){
-      moveToArchive(o,'Cancelled');
-      orders=orders.filter(x=>x.id!==editingId);
-      toast(`🚫 "${o.cpo}" cancelled & archived.`,'warn');
-      closeModal(); renderTable(); return;
+      moveToArchive(o,'Cancelled'); orders=orders.filter(x=>x.id!==editingId); await dbDelete(editingId);
+      toast(`🚫 "${o.cpo}" cancelled & archived.`,'warn'); closeModal(); renderTable(); return;
     } else if(vals.projectStatus==='Forwarded to Stock'){
-      moveToArchive(o,'Forwarded to Stock');
-      orders=orders.filter(x=>x.id!==editingId);
-      toast(`📥 "${o.cpo}" forwarded to Stock & archived.`,'info');
-      closeModal(); renderTable(); return;
+      moveToArchive(o,'Forwarded to Stock'); orders=orders.filter(x=>x.id!==editingId); await dbDelete(editingId);
+      toast(`📥 "${o.cpo}" forwarded to Stock & archived.`,'info'); closeModal(); renderTable(); return;
     } else if(vals.projectStatus==='Delayed'){
       toast(`⏳ "${o.cpo}" marked Delayed — notifying Sales...`,'warn');
-      closeModal(); renderTable();
-      setTimeout(()=>openDelayModal(o), 300); return;
-    } else {
-      toast('Order updated');
-    }
+      closeModal(); renderTable(); setTimeout(()=>openDelayModal(o),300); return;
+    } else { toast('Order updated'); }
+  } else {
+    ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)vals[k]=el.value;});
+    if(!vals.site||!vals.cpo){toast('Site and Customer PO# are required','error');return;}
+    const newOrder=await dbInsert({...vals,qty:+vals.qty||1});
+    if(!newOrder)return;
+    orders.push({...newOrder,files:[]});
+    toast('Order added');
   }
-  else{ALL_FORM_KEYS.forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)vals[k]=el.value;});if(!vals.site||!vals.cpo){toast('Site and Customer PO# are required','error');return;}orders.push({id:nextId++,...vals,qty:+vals.qty||1,files:[]});toast('Order added');}
-  closeModal();renderTable();
+  closeModal(); renderTable();
 }
 
 // ─── FILES ────────────────────────────────────────────────────
@@ -2329,33 +2412,17 @@ function switchTab(tab) {
   const salesPanel   = document.getElementById('salesDelayPanel');
   const weeklyPanel  = document.getElementById('weeklyPlanPanel');
   const fab          = document.getElementById('fabBtn');
-  // hide all
-  ordersArea.style.display = 'none';
-  toolbar.style.display    = 'none';
-  adminPanel.classList.remove('visible');
-  shippedPanel.classList.remove('visible');
-  archivePanel.classList.remove('visible');
+  ordersArea.style.display='none'; toolbar.style.display='none';
+  adminPanel.classList.remove('visible'); shippedPanel.classList.remove('visible'); archivePanel.classList.remove('visible');
   if (salesPanel)  salesPanel.style.display  = 'none';
   if (weeklyPanel) weeklyPanel.style.display = 'none';
   fab.style.display = 'none';
-  if (tab === 'admin') {
-    adminPanel.classList.add('visible');
-    renderAccountsGrid();
-  } else if (tab === 'shipped') {
-    shippedPanel.classList.add('visible');
-    renderShippedTable();
-  } else if (tab === 'archive') {
-    archivePanel.classList.add('visible');
-    renderArchiveTable();
-  } else if (tab === 'sales-delay') {
-    if (salesPanel) { salesPanel.style.display = 'flex'; renderSalesDelayPanel(); }
-  } else if (tab === 'weekly-plan') {
-    if (weeklyPanel) { weeklyPanel.style.display = 'flex'; renderWeeklyPlan(); }
-  } else {
-    ordersArea.style.display = '';
-    toolbar.style.display    = '';
-    if (ROLES[currentRole].canAdd) fab.style.display = '';
-  }
+  if (tab==='admin')        { adminPanel.classList.add('visible'); renderAccountsGrid(); }
+  else if (tab==='shipped') { shippedPanel.classList.add('visible'); renderShippedTable(); }
+  else if (tab==='archive') { archivePanel.classList.add('visible'); renderArchiveTable(); }
+  else if (tab==='sales-delay')  { if(salesPanel)  { salesPanel.style.display='flex';  renderSalesDelayPanel(); } }
+  else if (tab==='weekly-plan')  { if(weeklyPanel) { weeklyPanel.style.display='flex'; renderWeeklyPlan(); } }
+  else { ordersArea.style.display=''; toolbar.style.display=''; if(ROLES[currentRole].canAdd) fab.style.display=''; }
 }
 
 function buildColorPicker(containerId, currentColor, onSelect) {
@@ -2390,20 +2457,10 @@ function renderAccountsGrid() {
         <span class="hint-role-badge ${u.role}">${ROLES[u.role].label}</span>
       </div>
       <div class="account-details">
-        <div class="account-detail-item">
-          <div class="account-detail-label">Username</div>
-          <div class="account-detail-value">${u.username}</div>
-        </div>
-        <div class="account-detail-item">
-          <div class="account-detail-label">Role</div>
-          <div class="account-detail-value">${ROLES[u.role].label}</div>
-        </div>
-        <div class="account-detail-item">
-          <div class="account-detail-label">Password</div>
-          <div class="account-detail-value" style="letter-spacing:0.15em">••••••••</div>
-        </div>
-        <div class="account-detail-item">
-          <div class="account-detail-label">Avatar Color</div>
+        <div class="account-detail-item"><div class="account-detail-label">Username</div><div class="account-detail-value">${u.username}</div></div>
+        <div class="account-detail-item"><div class="account-detail-label">Role</div><div class="account-detail-value">${ROLES[u.role].label}</div></div>
+        <div class="account-detail-item"><div class="account-detail-label">Password</div><div class="account-detail-value" style="letter-spacing:0.15em">••••••••</div></div>
+        <div class="account-detail-item"><div class="account-detail-label">Avatar Color</div>
           <div class="account-detail-value" style="display:flex;align-items:center;gap:6px;">
             <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${u.avatarColor};flex-shrink:0;"></span>${u.avatarColor}
           </div>
@@ -2418,270 +2475,129 @@ function renderAccountsGrid() {
 }
 
 function createAccount() {
-  const name = document.getElementById('na-name').value.trim();
-  const user = document.getElementById('na-user').value.trim().toLowerCase();
-  const pass = document.getElementById('na-pass').value;
-  const role = document.getElementById('na-role').value;
-  if (!name || !user || !pass) { toast('Name, username, and password are required', 'error'); return; }
-  if (pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
-  if (userList.find(u => u.username.toLowerCase() === user)) { toast('Username already exists', 'error'); return; }
-  userList.push({ username: user, password: pass, displayName: name, role, avatarColor: selectedNewColor });
-  // clear form
-  document.getElementById('na-name').value = '';
-  document.getElementById('na-user').value = '';
-  document.getElementById('na-pass').value = '';
-  document.getElementById('na-role').value = 'purchaser';
-  selectedNewColor = AVATAR_COLORS[0];
-  buildColorPicker('na-colorPicker', selectedNewColor, null);
-  renderAccountsGrid();
-  toast('Account created: ' + name, 'success');
+  const name=document.getElementById('na-name').value.trim();
+  const user=document.getElementById('na-user').value.trim().toLowerCase();
+  const pass=document.getElementById('na-pass').value;
+  const role=document.getElementById('na-role').value;
+  if(!name||!user||!pass){toast('Name, username, and password are required','error');return;}
+  if(pass.length<6){toast('Password must be at least 6 characters','error');return;}
+  if(userList.find(u=>u.username.toLowerCase()===user)){toast('Username already exists','error');return;}
+  userList.push({username:user,password:pass,displayName:name,role,avatarColor:selectedNewColor});
+  document.getElementById('na-name').value='';document.getElementById('na-user').value='';
+  document.getElementById('na-pass').value='';document.getElementById('na-role').value='purchaser';
+  selectedNewColor=AVATAR_COLORS[0];buildColorPicker('na-colorPicker',selectedNewColor,null);
+  renderAccountsGrid();toast('Account created: '+name,'success');
 }
 
-function openEditAccount(idx) {
-  editingAccountIdx = idx;
-  const u = userList[idx];
-  document.getElementById('ea-name').value = u.displayName;
-  document.getElementById('ea-user').value = u.username;
-  document.getElementById('ea-pass').value = '';
-  document.getElementById('ea-role').value = u.role;
-  selectedEditColor = u.avatarColor;
-  buildColorPicker('ea-colorPicker', u.avatarColor, null);
+function openEditAccount(idx){
+  editingAccountIdx=idx;const u=userList[idx];
+  document.getElementById('ea-name').value=u.displayName;document.getElementById('ea-user').value=u.username;
+  document.getElementById('ea-pass').value='';document.getElementById('ea-role').value=u.role;
+  selectedEditColor=u.avatarColor;buildColorPicker('ea-colorPicker',u.avatarColor,null);
   document.getElementById('editAccountModal').classList.add('open');
 }
+function closeEditAccount(){document.getElementById('editAccountModal').classList.remove('open');editingAccountIdx=null;}
 
-function closeEditAccount() {
-  document.getElementById('editAccountModal').classList.remove('open');
-  editingAccountIdx = null;
+function saveEditAccount(){
+  if(editingAccountIdx===null)return;
+  const name=document.getElementById('ea-name').value.trim();
+  const user=document.getElementById('ea-user').value.trim().toLowerCase();
+  const pass=document.getElementById('ea-pass').value;
+  const role=document.getElementById('ea-role').value;
+  if(!name||!user){toast('Name and username are required','error');return;}
+  if(pass&&pass.length<6){toast('Password must be at least 6 characters','error');return;}
+  const conflict=userList.find((u,i)=>u.username.toLowerCase()===user&&i!==editingAccountIdx);
+  if(conflict){toast('Username already taken','error');return;}
+  const u=userList[editingAccountIdx];
+  u.displayName=name;u.username=user;if(pass)u.password=pass;u.role=role;u.avatarColor=selectedEditColor;
+  if(currentUser&&currentUser.username===userList[editingAccountIdx].username){
+    currentUser=u;
+    const initials=u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('userAvatar').textContent=initials;
+    document.getElementById('userAvatar').style.background=u.avatarColor;
+    document.getElementById('userNameDisplay').textContent=u.displayName;
+  }
+  closeEditAccount();renderAccountsGrid();toast('Account updated','success');
 }
 
-function saveEditAccount() {
-  if (editingAccountIdx === null) return;
-  const name = document.getElementById('ea-name').value.trim();
-  const user = document.getElementById('ea-user').value.trim().toLowerCase();
-  const pass = document.getElementById('ea-pass').value;
-  const role = document.getElementById('ea-role').value;
-  if (!name || !user) { toast('Name and username are required', 'error'); return; }
-  if (pass && pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
-  const conflict = userList.find((u, i) => u.username.toLowerCase() === user && i !== editingAccountIdx);
-  if (conflict) { toast('Username already taken', 'error'); return; }
-  const u = userList[editingAccountIdx];
-  u.displayName  = name;
-  u.username     = user;
-  if (pass) u.password = pass;
-  u.role         = role;
-  u.avatarColor  = selectedEditColor;
-  // if editing self, refresh topbar chip
-  if (currentUser && currentUser.username === userList[editingAccountIdx].username) {
-    currentUser = u;
-    const initials = u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    document.getElementById('userAvatar').textContent = initials;
-    document.getElementById('userAvatar').style.background = u.avatarColor;
-    document.getElementById('userNameDisplay').textContent = u.displayName;
-  }
-  closeEditAccount();
-  renderAccountsGrid();
-  toast('Account updated', 'success');
+function deleteAccount(idx){
+  const u=userList[idx];
+  if(currentUser&&u.username===currentUser.username){toast('Cannot delete your own account','warn');return;}
+  if(!confirm('Delete account for '+u.displayName+'?'))return;
+  userList.splice(idx,1);renderAccountsGrid();toast('Account deleted','info');
 }
 
-function deleteAccount(idx) {
-  const u = userList[idx];
-  if (currentUser && u.username === currentUser.username) { toast('Cannot delete your own account', 'warn'); return; }
-  if (!confirm('Delete account for ' + u.displayName + '?')) return;
-  userList.splice(idx, 1);
-  renderAccountsGrid();
-  toast('Account deleted', 'info');
-}
-
-// ─── PATCH LOGIN TO USE userList ────────────────────────────
-// Override attemptLogin to use mutable userList
-const _origAttemptLogin = attemptLogin;
-window.attemptLogin = function() {
-  const u = document.getElementById('loginUser').value.trim().toLowerCase();
-  const p = document.getElementById('loginPass').value;
-  const found = userList.find(x => x.username.toLowerCase() === u && x.password === p);
-  if (!found) {
-    document.getElementById('loginError').classList.add('visible');
-    document.getElementById('loginPass').value = '';
-    document.getElementById('loginPass').focus();
-    return;
-  }
-  currentUser = found;
-  setRole(found.role);
-  const initials = found.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  const av = document.getElementById('userAvatar');
-  av.textContent = initials;
-  av.style.background = found.avatarColor;
-  document.getElementById('userNameDisplay').textContent = found.displayName;
-  document.getElementById('userChip').style.display = 'flex';
-  document.getElementById('logoutBtn').style.display = '';
-  updateRoleSwitcherLock(found.role);
-  // Show/hide admin tab
-  document.getElementById('tab-admin').classList.toggle('locked-tab', found.role !== 'admin');
-  // Show sales delay tab only for sales role
-  const salesTabEl = document.getElementById('tab-sales-delay');
-  if (salesTabEl) salesTabEl.style.display = (found.role === 'sales') ? '' : 'none';
-  // Update unread delay badge for sales
-  if (found.role === 'sales') {
-    const notices = loadDelayNotices();
-    const unread  = notices.filter(n=>!n.read).length;
-    const badge   = document.getElementById('salesDelayBadge');
-    if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? '' : 'none'; }
-  }
-  document.getElementById('loginOverlay').classList.add('hidden');
-  toast('Welcome, ' + found.displayName.split(' ')[0] + '! Signed in as ' + ROLES[found.role].label + '.', 'info');
-};
-
-// Patch logout to also hide admin tab
-const _origLogout = logout;
-window.logout = function() {
-  // go back to orders tab first
-  switchTab('orders');
-  currentUser = null;
-  document.getElementById('loginOverlay').classList.remove('hidden');
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-  document.getElementById('loginError').classList.remove('visible');
-  document.getElementById('userChip').style.display = 'none';
-  document.getElementById('logoutBtn').style.display = 'none';
-  document.getElementById('tab-admin').classList.add('locked-tab');
-  document.querySelectorAll('.role-btn').forEach(btn => { btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = ''; btn.title = ''; });
-  selectedRows.clear();
-  switchTab('orders');
-  updateShippedTabBadge();
-updateArchiveTabBadge();
-  toast('Signed out', 'info');
-};
-
-// Patch ESC key to also close edit account modal
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeEditAccount();
+  if (e.key==='Escape') closeEditAccount();
 });
 
 // ─── WEEKLY PLAN ──────────────────────────────────────────────
 let wpWeekOffset = 0;
 
 function getWeekStart(offset) {
-  const now = new Date();
-  const day = now.getDay();
+  const now = new Date(), day = now.getDay();
   const monday = new Date(now);
-  monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + offset * 7);
+  monday.setDate(now.getDate() - (day===0?6:day-1) + offset*7);
   monday.setHours(0,0,0,0);
   return monday;
 }
-
 function weeklyPlanNav(dir) { wpWeekOffset += dir; renderWeeklyPlan(); }
 function weeklyPlanGoToday() { wpWeekOffset = 0; renderWeeklyPlan(); }
 
 function renderWeeklyPlan() {
   const weekStart = getWeekStart(wpWeekOffset);
-  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
+  const weekEnd   = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+6);
   const fmt = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  document.getElementById('wpWeekLabel').textContent = fmt(weekStart) + ' – ' + fmt(weekEnd);
+  document.getElementById('wpWeekLabel').textContent = fmt(weekStart)+' – '+fmt(weekEnd);
 
-  // Populate site filter
   const sf = document.getElementById('wpSiteFilter');
   const prevSite = sf.value;
-  const sites = [...new Set(orders.map(o=>o.site))].sort();
-  sf.innerHTML = '<option value="">All Sites</option>' + sites.map(s=>`<option ${s===prevSite?'selected':''}>${s}</option>`).join('');
+  sf.innerHTML = '<option value="">All Sites</option>' +
+    [...new Set(orders.map(o=>o.site))].sort().map(s=>`<option ${s===prevSite?'selected':''}>${s}</option>`).join('');
 
   const siteFilter = sf.value;
   const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = today.toISOString().slice(0,10);
 
-  // Build 7 days Mon-Sun
-  const days = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(weekStart);
-    d.setDate(weekStart.getDate() + i);
-    days.push(d);
-  }
-
-  let assyCount = 0, qcCount = 0, overdueCount = 0;
-
-  // For each day, find orders whose dateAssy or dateQc falls on that day
+  const days = Array.from({length:7},(_,i)=>{ const d=new Date(weekStart); d.setDate(weekStart.getDate()+i); return d; });
   const byDay = days.map(d => {
     const dStr = d.toISOString().slice(0,10);
-    const matched = [];
-    orders.forEach(o => {
-      if (siteFilter && o.site !== siteFilter) return;
-      const hasAssy = o.dateAssy === dStr;
-      const hasQc   = o.dateQc   === dStr;
-      if (hasAssy || hasQc) matched.push({ order: o, hasAssy, hasQc });
-    });
-    return matched;
+    return orders.filter(o => (!siteFilter||o.site===siteFilter) && o.dateAssy===dStr);
   });
 
-  // Stats
-  byDay.forEach((dayItems, di) => {
-    const d = days[di];
-    dayItems.forEach(({ order, hasAssy, hasQc }) => {
-      if (hasAssy) { assyCount++; if (new Date(order.dateAssy) < today) overdueCount++; }
-      if (hasQc)   { qcCount++;   if (new Date(order.dateQc)   < today) overdueCount++; }
-    });
-  });
-
-  document.getElementById('wp-assy-count').textContent    = assyCount;
-  document.getElementById('wp-qc-count').textContent      = qcCount;
+  let weekCount=0, overdueCount=0;
+  byDay.forEach((dayOrders,di)=>{ weekCount+=dayOrders.length; if(days[di]<today) overdueCount+=dayOrders.length; });
+  document.getElementById('wp-week-count').textContent    = weekCount;
   document.getElementById('wp-overdue-count').textContent = overdueCount;
 
-  const DAY_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-  const body = document.getElementById('weeklyPlanBody');
-  body.innerHTML = days.map((d, di) => {
-    const dStr     = d.toISOString().slice(0,10);
-    const isToday  = dStr === today.toISOString().slice(0,10);
-    const isWeekend = di >= 5;
-    const dayItems = byDay[di];
-
-    let badgeClass = '', badgeText = 'No orders';
-    if (dayItems.length > 0) {
-      const hasA = dayItems.some(x => x.hasAssy);
-      const hasQ = dayItems.some(x => x.hasQc);
-      const hasOver = dayItems.some(x =>
-        (x.hasAssy && new Date(x.order.dateAssy) < today) ||
-        (x.hasQc   && new Date(x.order.dateQc)   < today));
-      if (hasOver)      badgeClass = 'has-overdue';
-      else if (hasA && hasQ) badgeClass = 'has-both';
-      else if (hasA)    badgeClass = 'has-assy';
-      else if (hasQ)    badgeClass = 'has-qc';
-      badgeText = dayItems.length + ' order' + (dayItems.length > 1 ? 's' : '');
-    }
-
-    const cardsHtml = dayItems.length === 0
-      ? `<div class="wp-empty-day">—</div>`
-      : dayItems.map(({ order: o, hasAssy, hasQc }) => {
-          const both = hasAssy && hasQc;
-          const typeClass = both ? 'type-both' : hasAssy ? 'type-assy' : 'type-qc';
-          const typeBadge = both ? 'both' : hasAssy ? 'assy' : 'qc';
-          const typeName  = both ? '🔧 Assy + 🔍 QC' : hasAssy ? '🔧 Assembly' : '🔍 QC';
-
-          let statusClass = '';
-          if (o.issuanceStatus === 'Delayed')     statusClass = 'status-delayed';
-          else if (o.issuanceStatus === 'Complete') statusClass = 'status-complete';
-          else if (o.issuanceStatus === 'In Progress') statusClass = 'status-in-progress';
-
-          const assyOverdue = hasAssy && o.dateAssy && new Date(o.dateAssy) < today;
-          const qcOverdue   = hasQc   && o.dateQc   && new Date(o.dateQc)   < today;
-          const isOverdue   = assyOverdue || qcOverdue;
-
-          return `<div class="wp-card ${typeClass} ${statusClass}" onclick="openEditModal(${o.id})" title="Click to edit">
-            <span class="wp-card-type-badge ${typeBadge}">${typeName}</span>
-            <div class="wp-card-site">${o.site || '—'}</div>
-            <div class="wp-card-cpo">${o.cpo || '—'}</div>
-            <div class="wp-card-ident">${o.ident || o.pn || '—'}</div>
-            <div class="wp-card-meta">
-              <span class="wp-meta-chip qty">×${o.qty}</span>
-              ${o.assy ? `<span class="wp-meta-chip assy">${o.assy}</span>` : ''}
-              <span class="wp-meta-chip">${o.issuanceStatus || 'Open'}</span>
-              ${isOverdue ? `<span class="wp-meta-chip overdue">⚠ Overdue</span>` : ''}
+  document.getElementById('weeklyPlanBody').innerHTML = days.map((d,di)=>{
+    const dStr=d.toISOString().slice(0,10), isToday=dStr===todayStr, isWeekend=di>=5;
+    const dayOrders=byDay[di], isOverdue=d<today&&dayOrders.length>0;
+    let countClass='', countText='No orders';
+    if(dayOrders.length>0){ countClass=isOverdue?'has-overdue':'has-items'; countText=dayOrders.length+' order'+(dayOrders.length!==1?'s':''); }
+    const cardsHtml = dayOrders.length===0
+      ? `<div class="wp-empty-day">No assembly scheduled</div>`
+      : dayOrders.map(o=>{
+          const cc=o.issuanceStatus==='Delayed'?'delayed':o.issuanceStatus==='Complete'?'complete':o.issuanceStatus==='In Progress'?'in-progress':o.issuanceStatus==='Pending'?'pending':isOverdue?'overdue-card':'';
+          return `<div class="wp-card ${cc}" onclick="openEditModal(${o.id})" title="Click to edit">
+            <div class="wp-card-site">${o.site||'—'}</div>
+            <div class="wp-card-cpo">${o.cpo||'—'}</div>
+            <div class="wp-card-ident">${o.ident||o.pn||'—'}</div>
+            <div class="wp-card-chips">
+              <span class="wp-chip qty">×${o.qty}</span>
+              ${o.assy?`<span class="wp-chip assy">${o.assy}</span>`:''}
+              <span class="wp-chip">${o.issuanceStatus||'Open'}</span>
+              ${isOverdue?`<span class="wp-chip overdue">⚠ Overdue</span>`:''}
             </div>
           </div>`;
         }).join('');
-
-    return `<div class="wp-day-col${isWeekend ? ' weekend' : ''}">
-      <div class="wp-day-header${isToday ? ' today' : ''}${isWeekend ? ' weekend' : ''}">
-        <div class="wp-day-name">${DAY_FULL[di]}</div>
+    return `<div class="wp-day-col${isWeekend?' weekend':''}">
+      <div class="wp-day-header${isToday?' today':''}${isWeekend?' weekend':''}">
+        <div class="wp-day-name">${DAY_NAMES[di]}</div>
         <div class="wp-day-date">${d.getDate()}</div>
-        <span class="wp-day-badge ${badgeClass}">${badgeText}</span>
+        <span class="wp-day-count ${countClass}">${countText}</span>
       </div>
       <div class="wp-day-items">${cardsHtml}</div>
     </div>`;
@@ -2689,33 +2605,21 @@ function renderWeeklyPlan() {
 }
 
 function exportWeeklyPlanCSV() {
-  const weekStart = getWeekStart(wpWeekOffset);
-  const days = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(weekStart); d.setDate(weekStart.getDate() + i); days.push(d);
+  const weekStart=getWeekStart(wpWeekOffset), siteFilter=document.getElementById('wpSiteFilter').value;
+  const rows=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(weekStart); d.setDate(weekStart.getDate()+i);
+    const dStr=d.toISOString().slice(0,10), dayName=d.toLocaleDateString('en-US',{weekday:'long'});
+    orders.filter(o=>(!siteFilter||o.site===siteFilter)&&o.dateAssy===dStr)
+      .forEach(o=>rows.push([dStr,dayName,o.site,o.cpo,o.apo,o.prs,o.qty,o.assy,o.ident,o.pn,o.issuanceStatus,o.projectStatus]));
   }
-  const siteFilter = document.getElementById('wpSiteFilter').value;
-  const h = ['Date','Day','Type','Site','Customer PO#','Alliance PO#','PRS#','QTY','Assy Type','Identification','Part Number','Issuance Status','Project Status','Date of Assembly','Date of QC'];
-  const rows = [];
-  days.forEach(d => {
-    const dStr = d.toISOString().slice(0,10);
-    const dayName = d.toLocaleDateString('en-US',{weekday:'long'});
-    orders.forEach(o => {
-      if (siteFilter && o.site !== siteFilter) return;
-      const hasAssy = o.dateAssy === dStr;
-      const hasQc   = o.dateQc   === dStr;
-      if (!hasAssy && !hasQc) return;
-      const type = (hasAssy && hasQc) ? 'Assy + QC' : hasAssy ? 'Assembly' : 'QC';
-      rows.push([dStr, dayName, type, o.site, o.cpo, o.apo, o.prs, o.qty, o.assy, o.ident, o.pn, o.issuanceStatus, o.projectStatus, o.dateAssy||'', o.dateQc||'']);
-    });
-  });
-  if (!rows.length) { toast('No orders scheduled this week','warn'); return; }
-  const csv = [h,...rows].map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = `weekly-plan-${weekStart.toISOString().slice(0,10)}.csv`;
-  a.click();
-  toast('Weekly plan exported');
+  if(!rows.length){toast('No orders scheduled this week','warn');return;}
+  const h=['Date of Assembly','Day','Site','Customer PO#','Alliance PO#','PRS#','QTY','Assy Type','Identification','Part Number','Issuance Status','Project Status'];
+  const csv=[h,...rows].map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`weekly-plan-${weekStart.toISOString().slice(0,10)}.csv`;
+  a.click(); toast('Weekly plan exported');
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
