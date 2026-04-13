@@ -2531,19 +2531,21 @@ async function createAccount() {
     const passEl = document.getElementById('na-pass');
     const roleEl = document.getElementById('na-role');
 
-    if (!nameEl || !userEl || !passEl || !roleEl) {
-      toast('Form not found — please try again', 'error'); return;
-    }
+    console.log('createAccount fired');
+    console.log('na-name el:', nameEl);
+    console.log('na-name value:', nameEl ? nameEl.value : 'ELEMENT NOT FOUND');
 
-    const name  = (nameEl.value || '').trim();
-    const user  = (userEl.value || '').trim().toLowerCase();
-    const pass  = (passEl.value || '').trim();
-    const role  = roleEl.value || 'purchaser';
+    const name  = (nameEl?.value || '').trim();
+    const user  = (userEl?.value || '').trim().toLowerCase();
+    const pass  = (passEl?.value || '').trim();
+    const role  = roleEl?.value || 'purchaser';
     const color = selectedNewColor || AVATAR_COLORS[0];
 
-    if (!name) { toast('Display name is required', 'error'); nameEl.focus(); return; }
-    if (!user) { toast('Username is required', 'error'); userEl.focus(); return; }
-    if (!pass) { toast('Password is required', 'error'); passEl.focus(); return; }
+    console.log('name:', name, '| user:', user, '| pass:', pass ? '***' : '(empty)');
+
+    if (!name) { toast('Display name is required', 'error'); nameEl?.focus(); return; }
+    if (!user) { toast('Username is required', 'error'); userEl?.focus(); return; }
+    if (!pass) { toast('Password is required', 'error'); passEl?.focus(); return; }
     if (pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
     if (userList.find(u => u.username.toLowerCase() === user)) { toast('Username already exists', 'error'); return; }
 
@@ -2552,7 +2554,7 @@ async function createAccount() {
       username: user, password: pass, display_name: name, role, avatar_color: color,
     }).select().single();
 
-    if (error) { toast('Failed: ' + error.message, 'error'); return; }
+    if (error) { toast('Failed: ' + error.message, 'error'); console.error('Supabase error:', error); return; }
 
     userList.push(userDbToApp(data));
     nameEl.value = ''; userEl.value = ''; passEl.value = ''; roleEl.value = 'purchaser';
