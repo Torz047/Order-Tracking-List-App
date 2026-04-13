@@ -1106,7 +1106,12 @@
       </div>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:14px;">
-      <button class="toolbar-btn primary" onclick="createAccount()">
+      <button class="toolbar-btn primary" onclick="event.stopPropagation(); createAccount(
+        document.getElementById('na-name').value,
+        document.getElementById('na-user').value,
+        document.getElementById('na-pass').value,
+        document.getElementById('na-role').value
+      )">
         <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         Create Account
       </button>
@@ -2522,30 +2527,21 @@ function renderAccountsGrid() {
 }
 
 let _creatingAccount = false;
-async function createAccount() {
+async function createAccount(rawName, rawUser, rawPass, rawRole) {
   if (_creatingAccount) return;
   _creatingAccount = true;
   try {
-    const nameEl = document.getElementById('na-name');
-    const userEl = document.getElementById('na-user');
-    const passEl = document.getElementById('na-pass');
-    const roleEl = document.getElementById('na-role');
-
-    console.log('createAccount fired');
-    console.log('na-name el:', nameEl);
-    console.log('na-name value:', nameEl ? nameEl.value : 'ELEMENT NOT FOUND');
-
-    const name  = (nameEl?.value || '').trim();
-    const user  = (userEl?.value || '').trim().toLowerCase();
-    const pass  = (passEl?.value || '').trim();
-    const role  = roleEl?.value || 'purchaser';
+    const name  = (rawName  || '').trim();
+    const user  = (rawUser  || '').trim().toLowerCase();
+    const pass  = (rawPass  || '').trim();
+    const role  = (rawRole  || 'purchaser');
     const color = selectedNewColor || AVATAR_COLORS[0];
 
-    console.log('name:', name, '| user:', user, '| pass:', pass ? '***' : '(empty)');
+    console.log('createAccount called with:', name, user, pass ? '***' : '(empty)', role);
 
-    if (!name) { toast('Display name is required', 'error'); nameEl?.focus(); return; }
-    if (!user) { toast('Username is required', 'error'); userEl?.focus(); return; }
-    if (!pass) { toast('Password is required', 'error'); passEl?.focus(); return; }
+    if (!name) { toast('Display name is required', 'error'); return; }
+    if (!user) { toast('Username is required', 'error'); return; }
+    if (!pass) { toast('Password is required', 'error'); return; }
     if (pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
     if (userList.find(u => u.username.toLowerCase() === user)) { toast('Username already exists', 'error'); return; }
 
@@ -2557,7 +2553,10 @@ async function createAccount() {
     if (error) { toast('Failed: ' + error.message, 'error'); console.error('Supabase error:', error); return; }
 
     userList.push(userDbToApp(data));
-    nameEl.value = ''; userEl.value = ''; passEl.value = ''; roleEl.value = 'purchaser';
+    document.getElementById('na-name').value = '';
+    document.getElementById('na-user').value = '';
+    document.getElementById('na-pass').value = '';
+    document.getElementById('na-role').value = 'purchaser';
     selectedNewColor = AVATAR_COLORS[0];
     buildColorPicker('na-colorPicker', selectedNewColor, null);
     renderAccountsGrid();
