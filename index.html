@@ -1444,8 +1444,13 @@ function userDbToApp(r) {
 
 async function loadUsersFromDB() {
   const { data, error } = await sb.from('users').select('*').order('id', { ascending: true });
-  if (error) { toast('Could not load users: '+error.message,'error'); return; }
-  userList = (data||[]).map(userDbToApp);
+  if (error || !data || data.length === 0) {
+    // Fallback to hardcoded users if DB fails or is empty
+    userList = USERS.slice();
+    toast('Using local accounts (check Supabase users table)', 'warn');
+    return;
+  }
+  userList = data.map(userDbToApp);
   initHints();
 }
 
@@ -2516,21 +2521,49 @@ function renderAccountsGrid() {
   }).join('');
 }
 
+let _creatingAccount = false;
 async function createAccount() {
-  const name=document.getElementById('na-name').value.trim();
-  const user=document.getElementById('na-user').value.trim().toLowerCase();
-  const pass=document.getElementById('na-pass').value;
-  const role=document.getElementById('na-role').value;
-  if(!name||!user||!pass){toast('Name, username, and password are required','error');return;}
-  if(pass.length<6){toast('Password must be at least 6 characters','error');return;}
-  if(userList.find(u=>u.username.toLowerCase()===user)){toast('Username already exists','error');return;}
-  const newUser = await dbInsertUser({username:user,password:pass,displayName:name,role,avatarColor:selectedNewColor});
-  if(!newUser)return;
-  userList.push(newUser);
-  document.getElementById('na-name').value='';document.getElementById('na-user').value='';
-  document.getElementById('na-pass').value='';document.getElementById('na-role').value='purchaser';
-  selectedNewColor=AVATAR_COLORS[0];buildColorPicker('na-colorPicker',selectedNewColor,null);
-  renderAccountsGrid();initHints();toast('Account created: '+name,'success');
+  if (_creatingAccount) return;
+  _creatingAccount = true;
+  try {
+    const nameEl = document.getElementById('na-name');
+    const userEl = document.getElementById('na-user');
+    const passEl = document.getElementById('na-pass');
+    const roleEl = document.getElementById('na-role');
+
+    if (!nameEl || !userEl || !passEl || !roleEl) {
+      toast('Form not found — please try again', 'error'); return;
+    }
+
+    const name  = (nameEl.value || '').trim();
+    const user  = (userEl.value || '').trim().toLowerCase();
+    const pass  = (passEl.value || '').trim();
+    const role  = roleEl.value || 'purchaser';
+    const color = selectedNewColor || AVATAR_COLORS[0];
+
+    if (!name) { toast('Display name is required', 'error'); nameEl.focus(); return; }
+    if (!user) { toast('Username is required', 'error'); userEl.focus(); return; }
+    if (!pass) { toast('Password is required', 'error'); passEl.focus(); return; }
+    if (pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+    if (userList.find(u => u.username.toLowerCase() === user)) { toast('Username already exists', 'error'); return; }
+
+    toast('Creating account…', 'info');
+    const { data, error } = await sb.from('users').insert({
+      username: user, password: pass, display_name: name, role, avatar_color: color,
+    }).select().single();
+
+    if (error) { toast('Failed: ' + error.message, 'error'); return; }
+
+    userList.push(userDbToApp(data));
+    nameEl.value = ''; userEl.value = ''; passEl.value = ''; roleEl.value = 'purchaser';
+    selectedNewColor = AVATAR_COLORS[0];
+    buildColorPicker('na-colorPicker', selectedNewColor, null);
+    renderAccountsGrid();
+    initHints();
+    toast('Account created: ' + name, 'success');
+  } finally {
+    _creatingAccount = false;
+  }
 }
 
 function openEditAccount(idx){
@@ -2544,18 +2577,23 @@ function closeEditAccount(){document.getElementById('editAccountModal').classLis
 
 async function saveEditAccount(){
   if(editingAccountIdx===null)return;
-  const name=document.getElementById('ea-name').value.trim();
-  const user=document.getElementById('ea-user').value.trim().toLowerCase();
-  const pass=document.getElementById('ea-pass').value;
-  const role=document.getElementById('ea-role').value;
+  const name = document.getElementById('ea-name').value.trim();
+  const user = document.getElementById('ea-user').value.trim().toLowerCase();
+  const pass = document.getElementById('ea-pass').value.trim();
+  const role = document.getElementById('ea-role').value;
   if(!name||!user){toast('Name and username are required','error');return;}
   if(pass&&pass.length<6){toast('Password must be at least 6 characters','error');return;}
   const conflict=userList.find((u,i)=>u.username.toLowerCase()===user&&i!==editingAccountIdx);
   if(conflict){toast('Username already taken','error');return;}
-  const u=userList[editingAccountIdx];
+
+  const u = userList[editingAccountIdx];
+  const payload = { username:user, display_name:name, role, avatar_color:selectedEditColor };
+  if(pass) payload.password = pass;
+
+  const { error } = await sb.from('users').update(payload).eq('id', u.id);
+  if(error){ toast('Failed to update: '+error.message,'error'); return; }
+
   u.displayName=name; u.username=user; if(pass)u.password=pass; u.role=role; u.avatarColor=selectedEditColor;
-  const ok = await dbUpdateUser(u);
-  if(!ok)return;
   if(currentUser&&currentUser.id===u.id){
     currentUser=u;
     const initials=u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -2563,16 +2601,16 @@ async function saveEditAccount(){
     document.getElementById('userAvatar').style.background=u.avatarColor;
     document.getElementById('userNameDisplay').textContent=u.displayName;
   }
-  closeEditAccount();renderAccountsGrid();initHints();toast('Account updated','success');
+  closeEditAccount(); renderAccountsGrid(); initHints(); toast('Account updated','success');
 }
 
 async function deleteAccount(idx){
-  const u=userList[idx];
+  const u = userList[idx];
   if(currentUser&&u.username===currentUser.username){toast('Cannot delete your own account','warn');return;}
   if(!confirm('Delete account for '+u.displayName+'?'))return;
-  const ok = await dbDeleteUser(u.id);
-  if(!ok)return;
-  userList.splice(idx,1);renderAccountsGrid();initHints();toast('Account deleted','info');
+  const { error } = await sb.from('users').delete().eq('id', u.id);
+  if(error){ toast('Failed to delete: '+error.message,'error'); return; }
+  userList.splice(idx,1); renderAccountsGrid(); initHints(); toast('Account deleted','info');
 }
 
 document.addEventListener('keydown', e => {
