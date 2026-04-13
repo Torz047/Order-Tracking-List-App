@@ -1429,6 +1429,48 @@ async function dbDelete(id) {
   if (error) { toast('DB Error: '+error.message,'error'); return false; }
   return true;
 }
+
+// ─── USER DB FUNCTIONS ────────────────────────────────────────
+function userDbToApp(r) {
+  return {
+    id:          r.id,
+    username:    r.username,
+    password:    r.password,
+    displayName: r.display_name,
+    role:        r.role,
+    avatarColor: r.avatar_color,
+  };
+}
+
+async function loadUsersFromDB() {
+  const { data, error } = await sb.from('users').select('*').order('id', { ascending: true });
+  if (error) { toast('Could not load users: '+error.message,'error'); return; }
+  userList = (data||[]).map(userDbToApp);
+  initHints();
+}
+
+async function dbInsertUser(u) {
+  const { data, error } = await sb.from('users').insert({
+    username: u.username, password: u.password,
+    display_name: u.displayName, role: u.role, avatar_color: u.avatarColor,
+  }).select().single();
+  if (error) { toast('DB Error: '+error.message,'error'); return null; }
+  return userDbToApp(data);
+}
+
+async function dbUpdateUser(u) {
+  const payload = { username: u.username, display_name: u.displayName, role: u.role, avatar_color: u.avatarColor };
+  if (u.password) payload.password = u.password;
+  const { error } = await sb.from('users').update(payload).eq('id', u.id);
+  if (error) { toast('DB Error: '+error.message,'error'); return false; }
+  return true;
+}
+
+async function dbDeleteUser(id) {
+  const { error } = await sb.from('users').delete().eq('id', id);
+  if (error) { toast('DB Error: '+error.message,'error'); return false; }
+  return true;
+}
 // ─── USER ACCOUNTS ────────────────────────────────────────────
 // To add/change users, edit this array.
 const USERS = [
@@ -1527,7 +1569,7 @@ let orders = [];
 // ─── LOGIN ────────────────────────────────────────────────────
 function initHints() {
   const c = document.getElementById('hintUsers');
-  c.innerHTML = USERS.map(u => `
+  c.innerHTML = userList.map(u => `
     <div class="hint-user" onclick="fillLogin('${u.username}','${u.password}')">
       <div class="hint-left">
         <div class="hint-avatar" style="background:${u.avatarColor}">${u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
@@ -2395,7 +2437,7 @@ let selectedNewColor  = AVATAR_COLORS[0];
 let selectedEditColor = AVATAR_COLORS[0];
 
 // Make USERS mutable (was const)
-let userList = USERS.slice();
+let userList = []; // loaded from Supabase on init
 
 function switchTab(tab) {
   const isAdmin = currentRole === 'admin';
@@ -2474,7 +2516,7 @@ function renderAccountsGrid() {
   }).join('');
 }
 
-function createAccount() {
+async function createAccount() {
   const name=document.getElementById('na-name').value.trim();
   const user=document.getElementById('na-user').value.trim().toLowerCase();
   const pass=document.getElementById('na-pass').value;
@@ -2482,11 +2524,13 @@ function createAccount() {
   if(!name||!user||!pass){toast('Name, username, and password are required','error');return;}
   if(pass.length<6){toast('Password must be at least 6 characters','error');return;}
   if(userList.find(u=>u.username.toLowerCase()===user)){toast('Username already exists','error');return;}
-  userList.push({username:user,password:pass,displayName:name,role,avatarColor:selectedNewColor});
+  const newUser = await dbInsertUser({username:user,password:pass,displayName:name,role,avatarColor:selectedNewColor});
+  if(!newUser)return;
+  userList.push(newUser);
   document.getElementById('na-name').value='';document.getElementById('na-user').value='';
   document.getElementById('na-pass').value='';document.getElementById('na-role').value='purchaser';
   selectedNewColor=AVATAR_COLORS[0];buildColorPicker('na-colorPicker',selectedNewColor,null);
-  renderAccountsGrid();toast('Account created: '+name,'success');
+  renderAccountsGrid();initHints();toast('Account created: '+name,'success');
 }
 
 function openEditAccount(idx){
@@ -2498,7 +2542,7 @@ function openEditAccount(idx){
 }
 function closeEditAccount(){document.getElementById('editAccountModal').classList.remove('open');editingAccountIdx=null;}
 
-function saveEditAccount(){
+async function saveEditAccount(){
   if(editingAccountIdx===null)return;
   const name=document.getElementById('ea-name').value.trim();
   const user=document.getElementById('ea-user').value.trim().toLowerCase();
@@ -2509,22 +2553,26 @@ function saveEditAccount(){
   const conflict=userList.find((u,i)=>u.username.toLowerCase()===user&&i!==editingAccountIdx);
   if(conflict){toast('Username already taken','error');return;}
   const u=userList[editingAccountIdx];
-  u.displayName=name;u.username=user;if(pass)u.password=pass;u.role=role;u.avatarColor=selectedEditColor;
-  if(currentUser&&currentUser.username===userList[editingAccountIdx].username){
+  u.displayName=name; u.username=user; if(pass)u.password=pass; u.role=role; u.avatarColor=selectedEditColor;
+  const ok = await dbUpdateUser(u);
+  if(!ok)return;
+  if(currentUser&&currentUser.id===u.id){
     currentUser=u;
     const initials=u.displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     document.getElementById('userAvatar').textContent=initials;
     document.getElementById('userAvatar').style.background=u.avatarColor;
     document.getElementById('userNameDisplay').textContent=u.displayName;
   }
-  closeEditAccount();renderAccountsGrid();toast('Account updated','success');
+  closeEditAccount();renderAccountsGrid();initHints();toast('Account updated','success');
 }
 
-function deleteAccount(idx){
+async function deleteAccount(idx){
   const u=userList[idx];
   if(currentUser&&u.username===currentUser.username){toast('Cannot delete your own account','warn');return;}
   if(!confirm('Delete account for '+u.displayName+'?'))return;
-  userList.splice(idx,1);renderAccountsGrid();toast('Account deleted','info');
+  const ok = await dbDeleteUser(u.id);
+  if(!ok)return;
+  userList.splice(idx,1);renderAccountsGrid();initHints();toast('Account deleted','info');
 }
 
 document.addEventListener('keydown', e => {
@@ -2623,12 +2671,15 @@ function exportWeeklyPlanCSV() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
-initHints();
-checkBreakpoint();
-renderTable();
-buildColorPicker('na-colorPicker', selectedNewColor, null);
-updateShippedTabBadge();
-updateArchiveTabBadge();
+(async function init() {
+  await loadUsersFromDB();  // load users from Supabase first
+  initHints();              // then populate login hints
+  checkBreakpoint();
+  renderTable();
+  buildColorPicker('na-colorPicker', selectedNewColor, null);
+  updateShippedTabBadge();
+  updateArchiveTabBadge();
+})();
 </script>
 </body>
 </html>
