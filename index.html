@@ -1452,11 +1452,10 @@ async function loadUsersFromDB() {
   if (error || !data || data.length === 0) {
     // Fallback to hardcoded users if DB fails or is empty
     userList = USERS.slice();
-    toast('Using local accounts (check Supabase users table)', 'warn');
-    return;
+  } else {
+    userList = data.map(userDbToApp);
   }
-  userList = data.map(userDbToApp);
-  initHints();
+  initHints(); // always refresh hints after loading
 }
 
 async function dbInsertUser(u) {
@@ -2711,8 +2710,7 @@ function exportWeeklyPlanCSV() {
 
 // ─── INIT ─────────────────────────────────────────────────────
 (async function init() {
-  await loadUsersFromDB();  // load users from Supabase first
-  initHints();              // then populate login hints
+  await loadUsersFromDB();  // loads users + calls initHints()
   checkBreakpoint();
   renderTable();
   buildColorPicker('na-colorPicker', selectedNewColor, null);
